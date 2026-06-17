@@ -1,0 +1,48 @@
+
+policy_path: '/home/csl/U1_ws/mjlab/logs/rsl_rl/little_white_velocity/2026-06-16_20-54-12_flat_little_white/model_9999_jit.pt'
+onnx_path: '/home/csl/U1_ws/mjlab/logs/rsl_rl/little_white_velocity/2026-06-16_20-54-12_flat_little_white/2026-06-16_20-54-12_flat_little_white.onnx'
+dt: 0.005
+# Controller update frequency (meets the requirement of simulation_dt * controll_decimation=0.02; 50Hz)
+control_decimation: 4
+# kps: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
+# kds: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+kps: [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
+kds: [0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4]
+# kps: [20, 25, 20, 20, 25, 20, 20, 25, 20, 20, 25, 20]
+# kds: [0.4, 0.6, 0.4, 0.4, 0.6, 0.4, 0.4, 0.6, 0.4, 0.4, 0.6, 0.4]
+
+default_angles: [0.100, 0.700, -1.000, -0.100, 0.700, -1.000, -0.100, 0.700, -1.000, 0.100, 0.700, -1.000]  # SDK order: FL, FR, RR, RL
+# default_angles: [ 0.0, -0.3, 1.0, 0.0, -0.3, 1.0, 0.0, -0.3, 1.0, 0.0, -0.3, 1.0]
+
+sit_angles: [0.4, 0.79, -1.91, -0.4, 0.79, -1.91, -0.4, 0.79, -1.91, 0.4,  0.79, -1.91]
+
+lin_vel_scale: 2.0
+ang_vel_scale: 0.25
+dof_pos_scale: 1.0
+dof_vel_scale: 0.05
+hip_action_scale: 0.125
+action_scale: [0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125]
+cmd_scale: [1.0, 1.0, 1.0]
+cmd_init: [0.0, 0.0, 0.0]
+num_actions: 12
+num_obs: 48
+
+# Conservative limits for validating a new policy/configuration pairing.
+action_clip: 1.0
+max_target_step: 0.2
+min_upright_gravity_z: -0.7
+max_joint_velocity: 15.0
+
+# DDS/MuJoCo motor indices follow the actuator and sensor order in little_white.xml.
+sdk_joint_order:
+  [FL_hip_joint, FL_thigh_joint, FL_calf_joint,
+   FR_hip_joint, FR_thigh_joint, FR_calf_joint,
+   RR_hip_joint, RR_thigh_joint, RR_calf_joint,
+   RL_hip_joint, RL_thigh_joint, RL_calf_joint]
+
+# Order used by the MJLab policy/action manager.
+policy_joint_order:
+  [FL_hip_joint, FL_thigh_joint, FL_calf_joint,
+   FR_hip_joint, FR_thigh_joint, FR_calf_joint,
+   RL_hip_joint, RL_thigh_joint, RL_calf_joint,
+   RR_hip_joint, RR_thigh_joint, RR_calf_joint]

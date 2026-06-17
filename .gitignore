@@ -1,0 +1,57 @@
+# Python cache / build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Local environment / secrets
+.env
+.env.*
+!.env.example
+
+# Editor / OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs and runtime output
+*.log
+logs/
+log/
+output/
+outputs/
+tmp/
+temp/
+
+# Experiment trackers / training runs
+runs/
+wandb/
+tensorboard/
+checkpoints/
+
+# Generated telemetry / plots
+*.csv
+*.npy
+*.npz
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.pdf
