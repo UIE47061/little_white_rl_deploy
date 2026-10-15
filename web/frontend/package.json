@@ -1,0 +1,20 @@
+{
+  "name": "little-white-dashboard",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "dev": "vite --host 0.0.0.0",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "three": "0.180.0",
+    "urdf-loader": "0.13.1"
+  },
+  "devDependencies": {
+    "@types/three": "0.180.0",
+    "typescript": "5.8.3",
+    "vite": "6.4.4"
+  }
+}

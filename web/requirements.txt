@@ -1,0 +1,4 @@
+# Optional runtime dependencies; install into the existing robot Python environment.
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+websockets>=13,<16

@@ -1,0 +1,50 @@
+# Paths are relative to this YAML file.
+policy_path: pre_train/wtw/wtw_stand_still/policy.pt
+metadata_path: pre_train/wtw/wtw_stand_still/metadata.json
+device: cpu
+
+# Match csl_mujoco/simulate_python/config.py.
+domain_id: 1
+interface: lo
+dt: 0.005
+control_decimation: 4
+num_actions: 12
+num_obs: 70
+history_length: 30
+
+# DDS motor order in the current little_white_v3 MuJoCo model.
+# Policy order is FR, FL, RL, RR; each leg is hip, thigh, calf.
+# Set this to the actual motor order when using another robot/bridge.
+# Policy -> DDS indices: [3, 4, 5, 0, 1, 2, 6, 7, 8, 9, 10, 11].
+motor_leg_order: [FL, FR, RL, RR]
+
+# All joint vectors below use POLICY order, not DDS motor order.
+default_angles: [0.0, 0.95, -1.7, 0.0, 0.95, -1.7, 0.0, 0.95, -1.7, 0.0, 0.95, -1.7]
+sit_angles: [-0.4, 1.2, -2.78, 0.4, 1.2, -2.78, 0.4, 1.2, -2.78, -0.4, 1.2, -2.78]
+kps: [20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0]
+kds: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+# q/kp/kd are sent to DDS; the simulator computes PD each physics step.
+# The simulator's actuator ctrlrange must enforce this torque_limit.
+action_scale: 0.25
+action_clip: 4.0
+torque_limit: 27.0
+dof_vel_scale: 0.05
+observation_clip: 100.0
+
+# vx, vy, yaw_rate, height offset, frequency, phase, offset, bound,
+# duty factor, swing height, pitch, roll, stance width, stance length, aux.
+cmd_init: [0.0, 0.0, 0.0, 0.0, 2.5, 0.5, 0.0, 0.0, 0.5, 0.06, 0.0, 0.0, 0.2929094785, 0.35649931395, 0.0]
+cmd_scale: [2.0, 2.0, 0.25, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.15, 0.3, 0.3, 1.0, 1.0, 1.0]
+
+use_gui: true
+# Match the exported model's forward/backward/lateral/yaw speed command limits.
+max_lin: 0.6
+max_backward: 0.3
+max_lateral: 0.25
+max_ang: 0.75
+# Same keyboard bounds as sim2sim_mujoco/wtw_commands.py.
+wtw_keyboard_limits:
+  height: [-0.04, 0.04]
+transition_seconds: 3.0
+state_timeout: 0.5
+startup_timeout: 10.0

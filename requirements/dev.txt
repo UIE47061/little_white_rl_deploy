@@ -1,0 +1,5 @@
+# Python checks, HTTP transport tests, and MuJoCo/browser integration helpers.
+-r web.txt
+-r ../web/requirements-dev.txt
+mujoco>=3.1,<4
+pygame>=2.5,<3

@@ -1,0 +1,3 @@
+# Base policy runtime plus the offline phone dashboard.
+-r base.txt
+-r ../web/requirements.txt

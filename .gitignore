@@ -1,57 +1,55 @@
-# Python cache / build artifacts
+# Python environments and caches
 __pycache__/
 *.py[cod]
 *$py.class
+.venv/
+.venv-*/
+venv/
+env/
+ENV/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
+.coverage.*
 htmlcov/
-build/
-dist/
 *.egg-info/
+build/
+/dist/
 
-# Virtual environments
-.venv/
-venv/
-env/
-ENV/
+# Frontend dependencies; web/dist is intentionally committed for offline use.
+node_modules/
 
-# Local environment / secrets
-.env
-.env.*
-!.env.example
-
-# Editor / OS files
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-.DS_Store
-Thumbs.db
-
-# Logs and runtime output
-*.log
+# Generated test output, training runs, and local experiments
+web/test-results/
+artifacts/
 logs/
 log/
 output/
 outputs/
 tmp/
 temp/
-
-# Experiment trackers / training runs
 runs/
 wandb/
 tensorboard/
 checkpoints/
-
-# Generated telemetry / plots
+*.log
+MUJOCO_LOG.TXT
+*.tmp
 *.csv
 *.npy
 *.npz
-*.png
-*.jpg
-*.jpeg
-*.svg
-*.pdf
+# Images are kept trackable for docs and offline web/model assets.
+
+# Local settings and editor files
+*.local.yaml
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

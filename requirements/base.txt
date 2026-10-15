@@ -1,0 +1,5 @@
+# Policy checks and console runtime. DDS SDK is installed separately; see docs/installation.md.
+numpy>=1.24,<3
+PyYAML>=6,<7
+# Match the TorchScript exporter used by the bundled policies.
+torch==2.11.0

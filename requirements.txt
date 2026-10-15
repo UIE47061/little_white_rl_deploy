@@ -1,0 +1,2 @@
+# Base runtime. Optional profiles are in requirements/.
+-r requirements/base.txt
