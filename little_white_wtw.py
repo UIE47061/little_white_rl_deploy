@@ -3,7 +3,7 @@
 Run: python little_white_wtw.py [interface] [--no-gui | --web]
 Check without DDS/GUI: python little_white_wtw.py --check
 Console: stand, move, sit, stop, gait trot/pace/bound/pronk,
-         cmd <name> <value>, status, exit.
+         preset trot/slippery_trot, cmd <name> <value>, status, exit.
 The controller sends joint targets and PD gains. The simulator evaluates PD
 against current joint state on every physics step and enforces actuator limits.
 """
@@ -20,6 +20,8 @@ import time
 import numpy as np
 import torch
 import yaml
+
+from wtw_motion import command_limits, limit_velocity
 
 
 DEFAULT_CONFIG = Path(__file__).with_suffix(".yaml")
@@ -96,6 +98,20 @@ class WTWPolicy:
         self.commands = np.asarray(cfg["cmd_init"], dtype=np.float32)
         self.command_scale = np.asarray(cfg["cmd_scale"], dtype=np.float32)
         self.validate_commands(self.commands)
+        self.preset = cfg.get("motion_preset")
+        self.motion_limits = None
+        if meta.get("slippery_command_limits") is not None:
+            if self.preset not in meta.get("operator_presets", {}) or "command_limits" not in cfg:
+                raise ValueError("This policy requires an explicit motion_preset and command_limits")
+            self.motion_limits = command_limits(cfg["command_limits"])
+            if self.motion_limits != meta["slippery_command_limits"]:
+                raise ValueError("Command limits differ from the evaluated slippery policy")
+            expected_preset = meta["operator_presets"][self.preset]
+            if not np.allclose(self.commands[[4, 8, 9]], [expected_preset[k] for k in
+                               ("frequency", "duration", "swing_height")], rtol=0, atol=1e-7):
+                raise ValueError("cmd_init does not match the selected motion preset")
+        elif self.preset is not None or cfg.get("command_limits") is not None:
+            raise ValueError("This policy does not declare slippery presets or limits")
         self.device = torch.device(cfg["device"])
         torch.set_num_threads(1)
         self.policy = torch.jit.load(str(self.policy_path), map_location=self.device).eval()
@@ -111,6 +127,13 @@ class WTWPolicy:
             raise ValueError("Invalid swing height, stance dimensions or idle_step (0/1)")
         if commands[14] and self.metadata.get("idle_control", {}).get("version") != 1:
             raise ValueError("This policy does not support idle_step")
+        if self.metadata.get("slippery_command_limits") is not None:
+            cfg = self.config
+            limits = [(-cfg.get("max_backward", .3), cfg["max_lin"]),
+                      (-cfg.get("max_lateral", .25), cfg.get("max_lateral", .25)),
+                      (-cfg["max_ang"], cfg["max_ang"])]
+            if any(not lo-1e-6 <= value <= hi+1e-6 for value, (lo, hi) in zip(commands[:3], limits)):
+                raise ValueError("Velocity outside configured policy limits")
 
     def reset(self):
         cfg = self.config
@@ -118,6 +141,38 @@ class WTWPolicy:
         self.last_action = np.zeros(12, dtype=np.float32)
         self.previous_action = np.zeros(12, dtype=np.float32)
         self.phase = np.float32(0.0)
+        self.effective_commands = self.commands.copy()
+        if self.preset == "slippery_trot":
+            self.effective_commands[:3] = 0
+
+    def set_preset(self, preset):
+        if preset not in self.metadata.get("operator_presets", {}):
+            raise ValueError("This policy does not support the requested preset")
+        values = self.metadata["operator_presets"][preset]
+        self.commands[4] = values["frequency"]
+        self.commands[5:8] = [.5, 0, 0]
+        self.commands[8] = values["duration"]
+        self.commands[9] = values["swing_height"]
+        self.preset = preset  # preserve history, last actions and gait phase
+
+    def prepare_command(self):
+        """Shape target velocity once per policy step, before writing observations."""
+        self.validate_commands(self.commands)
+        # Keyboard reset and web parameter controls carry public WTW parameters,
+        # so recognize the two exact preset pairs without an extra control bit.
+        for name, values in self.metadata.get("operator_presets", {}).items():
+            if np.allclose(self.commands[[8, 9]], [values["duration"], values["swing_height"]],
+                           rtol=0, atol=1e-7):
+                self.preset = name
+                break
+        self.effective_commands[3:] = self.commands[3:]
+        if self.preset == "slippery_trot":
+            current = torch.from_numpy(self.effective_commands[:3].copy()).unsqueeze(0)
+            target = torch.from_numpy(self.commands[:3].copy()).unsqueeze(0)
+            self.effective_commands[:3] = limit_velocity(current, target, self.control_dt,
+                                                       limits=self.motion_limits)[0].numpy()
+        else:
+            self.effective_commands[:3] = self.commands[:3]
 
     @staticmethod
     def gravity(quaternion):
@@ -132,7 +187,7 @@ class WTWPolicy:
                          1 - 2 * (w*w + z*z)], dtype=np.float32)
 
     def observe(self, q, dq, quaternion):
-        c = self.commands
+        c = self.effective_commands
         self.validate_commands(c)
         p, o, b = c[5:8]
         raw = np.remainder(self.phase + np.array([o, p+o+b, b, p], dtype=np.float32), 1.0)
@@ -148,6 +203,7 @@ class WTWPolicy:
         return np.clip(obs, -100.0, 100.0).astype(np.float32)
 
     def infer(self, q, dq, quaternion):
+        self.prepare_command()
         obs = self.observe(q, dq, quaternion)
         self.history[:-1] = self.history[1:].copy()
         self.history[-1] = obs
@@ -159,7 +215,7 @@ class WTWPolicy:
         self.previous_action = self.last_action.copy()
         self.last_action = action.copy()
         self.phase = np.float32(np.remainder(
-            self.phase + np.float32(self.control_dt) * self.commands[4], np.float32(1.0)))
+            self.phase + np.float32(self.control_dt) * self.effective_commands[4], np.float32(1.0)))
         target = self.default + self.config["action_scale"] * np.clip(
             action, -self.config["action_clip"], self.config["action_clip"])
         return target[self.motor_to_policy]
@@ -256,6 +312,14 @@ class Controller:
 
     def set_mode(self, mode):
         with self.lock:
+            if mode == "stop":
+                self.mode = "stop"
+                self.counter = 0
+                self.runtime.commands[:3] = 0
+                self.runtime.reset()
+                if self.teleop is not None:
+                    self.teleop.set_command(self.runtime.commands, velocity_override=True)
+                return  # Damping needs no fresh state and bypasses the command ramp.
             if self.state is None or time.monotonic()-self.state_time > self.config["state_timeout"]:
                 raise RuntimeError("No recent robot state")
             self.mode = mode
@@ -346,6 +410,10 @@ class Controller:
                 self.runtime.commands[5:8] = self.runtime.metadata["gait_presets"][words[1]]
                 if self.teleop is not None:
                     self.teleop.set_command(self.runtime.commands)
+            elif len(words) == 2 and words[0] == "preset":
+                self.runtime.set_preset(words[1])
+                if self.teleop is not None:
+                    self.teleop.set_command(self.runtime.commands)
             elif len(words) == 3 and words[0] in ("cmd", "ctl"):
                 index = 14 if words[1] == "idle_step" else self.runtime.metadata["command_names"].index(words[1])
                 candidate = self.runtime.commands.copy()
@@ -358,8 +426,9 @@ class Controller:
                 print(f"mode={self.mode}, running={self.running}, error={self.error}")
                 print(dict(zip(self.runtime.metadata["command_names"], self.runtime.commands.tolist())))
                 print(f"idle_step={int(self.runtime.commands[14])} (0=stand, 1=step at zero velocity)")
+                print(f"preset={self.runtime.preset}; effective vx/vy/yaw={self.runtime.effective_commands[:3].tolist()}")
             else:
-                raise ValueError("Use stand/sit/move/stop, gait <name>, cmd <name> <value>, ctl idle_step <0|1>, status or exit")
+                raise ValueError("Use stand/sit/move/stop, preset trot/slippery_trot, gait <name>, cmd <name> <value>, ctl idle_step <0|1>, status or exit")
 
     def ShutDown(self):
         self.running = False
@@ -395,6 +464,7 @@ def main():
         print(f"Policy: {runtime.policy_path}")
         print(f"Input: (1, {runtime.history.size}); output: {target.shape}; finite: {np.isfinite(target).all()}")
         print(f"DDS motor order: {runtime.config['motor_leg_order']}")
+        print(f"Preset: {runtime.preset}; command limits: {runtime.motion_limits}")
         if args.check_mapping:
             runtime.check_mujoco_mapping(args.check_mapping)
         return
@@ -422,7 +492,8 @@ def main():
             while controller.running:
                 time.sleep(0.1)
             return
-        print("Commands: stand, move, sit, stop, gait <name>, cmd <name> <value>, ctl idle_step <0|1>, status, exit")
+        print(f"Policy: {runtime.policy_path}; preset: {runtime.preset}")
+        print("Commands: stand, move, sit, stop, preset trot/slippery_trot, gait <name>, cmd <name> <value>, ctl idle_step <0|1>, status, exit")
         while controller.running:
             text = input("CMD: ").strip()
             if text == "exit":

@@ -71,7 +71,7 @@ class WebControl:
         now = time.monotonic() if now is None else now
         if self.owner is not None:
             if not self.fresh(now):
-                self.controller.mode = "stop"
+                self.controller.set_mode("stop")
                 self.release("DDS 狀態過期，已切阻尼", now)
             elif now-self.last_heartbeat > COMMAND_TIMEOUT:
                 self.release("操控逾時，已清除移動命令", now)
@@ -133,10 +133,7 @@ class WebControl:
             if mode != "stop" and not self.fresh(now):
                 raise ValueError("DDS state is stale")
             c.runtime.commands[:3] = 0
-            if mode == "stop":
-                c.mode = "stop"
-            else:
-                c.set_mode(mode)
+            c.set_mode(mode)
             self.epoch += 1
         elif action in ("parameters", "gait", "reset"):
             candidate = c.runtime.commands.copy()
@@ -184,5 +181,7 @@ class WebControl:
             "dq": dq.tolist() if dq is not None else None,
             "quaternion": quat.tolist() if quat is not None else None,
             "commands": dict(zip(COMMAND_NAMES, map(float, command))), "gait": gait,
+            "preset": getattr(c.runtime, "preset", None),
+            "effective_commands": dict(zip(COMMAND_NAMES, map(float, getattr(c.runtime, "effective_commands", command)))),
             "cycles": c.counter,
         }

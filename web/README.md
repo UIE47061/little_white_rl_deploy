@@ -75,7 +75,6 @@ FastAPI 在獨立子程序運行。父程序只有一個 policy 與 DDS 發送�
 cd web/frontend
 npm ci
 npm run build
-npm test
 ```
 
 Vite 建置輸出到 `web/dist/`。提交／複製專案時一起保留這個目錄。開發伺服器可用 `npm run dev`，需同時啟動 8080 後端；`/api` 與 `/ws` 會代理到後端。
@@ -91,30 +90,3 @@ Vite 建置輸出到 `web/dist/`。提交／複製專案時一起保留這個目
 - `mode` 帶 `mode: "stand" | "sit" | "move" | "stop"`；`parameters` 帶 `values`（例如 `{"frequency":2.8}`）；`gait` 帶 `gait` 名稱。
 - `state` 包含實際 `q`、`dq`、`quaternion`（wxyz）、狀態年齡、模式、轉換進度、控制者、epoch、命令設定及錯誤。`q`／`dq` 依 `/api/config.motor_joints` 對應。前端與 URDF 使用 X 前、Y 左、Z 上，四元數只轉換為 Three.js 的 xyzw 格式。
 - 模式／控制權改變時 epoch 更新，舊 epoch 的速度封包拒絕。伺服器接收超過 300 ms 的排隊命令拒絕；心跳不能自動取得控制或啟動 Move。
-
-## 測試
-
-在現有機器人環境安裝測試依賴：
-
-```bash
-uv pip install --python "$(python -c 'import sys; print(sys.executable)')" -r web/requirements-dev.txt
-python -m pytest -q tests
-python little_white_wtw.py --check
-python little_white_wtw.py --check-mapping ../csl_mujoco/unitree_robots/little_white_v3/scene.xml
-```
-
-整合測試啟動無視窗 MuJoCo、**現有 UnitreeSdk2Bridge** 與正式網頁 CLI。預設使用隔離的 domain **71**、`lo`，HTTP 18888；不接觸實機。測試夾具在第一次 Stand／Sit 前暫停物理，之後使用一般重力與接觸物理。
-
-```bash
-python tests/run_web_smoke.py
-# 加入已安裝的 Chromium／Chrome，驗證實際前端：
-python tests/run_web_smoke.py --browser /opt/google/chrome/chrome
-# 也可先 playwright install chromium，再提供其執行檔路徑。
-python tests/benchmark_web.py
-```
-
-整合測試包含控制權、Sit／Stand／Move、參數、實際關節回授、雙指操控、觸控取消、切背景釋放、橫直向排版、HTTP 子程序 SIGKILL 與 DDS 中斷。強制殺死 HTTP 後，透過獨立 DDS 訂閱確認 Controller 返回固定站姿；DDS 中斷後確認位置增益歸零。
-
-效能比較使用 domain **72**、HTTP 18889，在相同 policy 與 DDS 控制器上，比較無網頁與十個觀看連線的發送／推論頻率及週期間距。截圖、日誌與 `timing.json` 輸出在 git 忽略的 `web/test-results/`。手機觸控測試使用 Chromium 模擬；iOS／Android 實機與機載電腦仍需後續驗證。
-
-驗證步驟、歷史測量數據與手機版面檢查結果請見 [驗證記錄](../docs/validation.md)。

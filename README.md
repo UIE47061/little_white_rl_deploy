@@ -1,124 +1,128 @@
 # little_white_rl_deploy
 
-小白四足機器人的 Walk These Ways（WTW）RL 部署程式，透過 Unitree DDS 接收關節與 IMU 資料，執行 TorchScript policy，送出關節目標與 PD 增益。提供手機網頁、pygame 鍵盤與終端機三種操作方式。
+小白 V3 行走 policy 部署：透過 Unitree DDS 讀取關節／IMU，執行 TorchScript，送出關節目標與 PD 增益。
 
-![手機橫向控制台](docs/images/dashboard-landscape.png)
+| 版本 | 入口 | 模型 | 控制方式 |
+|---|---|---|---|
+| MJLab omni | `little_white_mjlab.py` | `pre_train/mjlab/omni/` | 鍵盤、終端機 |
+| WTW v8 | `little_white_wtw.py` | `pre_train/wtw/wtw_slippery_trot_v8/` | 鍵盤、終端機、手機網頁 |
 
-*介面示意圖使用測試狀態資料。手機橫向時，左搖桿控制前後與側移，右搖桿控制轉向，3D 模型固定在中央。*
+## 安裝
 
-## 功能
-
-- 依實際 DDS 回傳的 12 顆關節角度與 IMU 更新 3D URDF 姿態。
-- Sit／Stand／Move／阻尼停止，主畫面快速切換 TROT／PACE／BOUND／PRONK。
-- 高度、踏頻、抬腳高度滑桿，以及俯仰、側傾、站距等進階參數。
-- 單一裝置控制權、300 ms 操控逾時與 DDS 狀態逾時處理。
-- 網頁資源隨專案提供，運行時不需要 Node.js、CDN 或外網。
-
-目前驗證範圍為 MuJoCo＋真實 DDS 通路，以及 Chromium 的手機觸控模擬；實體手機與機載實機需要另行驗證。
-
-## 快速開始
-
-需要 Linux、Python 3.10 以上，以及已安裝 Unitree SDK2 Python／CycloneDDS 的機器人環境。若目前使用 `wtw-mjlab`，啟用該環境後，在本專案根目錄執行：
+需要 Linux、Python 3.10 以上、Unitree SDK2 Python／CycloneDDS。沿用已準備好的機器人環境，在專案目錄安裝：
 
 ```bash
-uv pip install --python "$(python -c 'import sys; print(sys.executable)')" -r requirements/web.txt
-python little_white_wtw.py --check
+# 鍵盤與模型推論依賴
+python -m pip install -r requirements/keyboard.txt
+# 使用 WTW 手機網頁時另外安裝
+python -m pip install -r requirements/web.txt
 ```
 
-沒有 uv、但環境有 pip 時，可改用 `python -m pip install -r requirements/web.txt`。全新環境、SDK 安裝及各種依賴組合請看 [安裝說明](docs/installation.md)。
+沒有 pip 的 uv 環境，可改用 `uv pip install --python "$(python -c 'import sys; print(sys.executable)')" -r requirements/keyboard.txt`。
+完整環境設定見 [安裝說明](docs/installation.md)。
 
-先在另一個終端機啟動現有模擬器。本專案預期與 `csl_mujoco` 並排：
+## 啟動模擬器
 
-```text
-workspace/
-├── little_white_rl_deploy/
-└── csl_mujoco/
-```
+`csl_mujoco` 是獨立專案，預期放在本專案旁邊，使用 `little_white_v3`、DDS domain 1、介面 `lo`。另一個終端機執行：
 
 ```bash
 cd ../csl_mujoco/simulate_python
 python unitree_mujoco.py
 ```
 
-模擬器使用 `little_white_v3`、DDS domain 1、介面 `lo`。接著回到本專案啟動網頁：
+接著選擇一個控制器執行。同一個機器人／DDS domain 使用一個控制器。
+
+## MJLab 行走
 
 ```bash
+python little_white_mjlab.py --check
+python little_white_mjlab.py lo
+# 純終端機
+python little_white_mjlab.py lo --no-gui
+```
+
+在終端機輸入 `stand`，等 3 秒後輸入 `move`，再點選鍵盤面板：
+
+- W／S：增減前後速度。
+- A／D：增減側移速度。
+- Q／E：增減轉向速度。
+- Space／Esc：速度歸零；Esc 不關閉面板。
+
+預設 `incremental` 模式每次增減 0.2，**放開按鍵會保留速度**；失焦或關窗時歸零。
+`little_white_mjlab.yaml` 的 `keyboard_mode: hold` 可改為按住移動、放開歸零。
+速度上限、線速度／角速度步幅也在此 YAML 調整；上限會受模型訓練範圍限制。
+
+終端機支援 `stand`、`sit`、`move`、`stop`、`status`、`exit`，以及 `cmd vx vy yaw`。
+例如 `cmd 0.2 0 0` 前進、`cmd 0 0 0` 零速度；`stop` 立即切阻尼。
+
+模型輸入是 20 幀 × 45 維：角速度、重力、相對關節角度、關節角速度、前次 action、速度指令。normalization 已內含。
+目前已通過短程 MuJoCo＋DDS 行走／停止驗證；原訓練端完整前處理設定仍待核對，尚未完成全速度範圍及實機驗收。
+與原始 repository 的差異見 [原版對照](docs/upstream_comparison.md)。
+
+## WTW 行走與手機網頁
+
+```bash
+python little_white_wtw.py --check
+python little_white_wtw.py lo
+python little_white_wtw.py lo --no-gui
+# 使用手機網頁操作
 python little_white_wtw.py lo --web
 ```
 
-電腦開啟 `http://127.0.0.1:8080`；手機連上相同路由器後，開啟 `http://電腦IP:8080`。操作順序為 **取得控制 → Stand → 等待轉換完成 → Move**。
+WTW 鍵盤為按住 W/S、A/D、Q/E 移動，放開歸零；終端機先 `stand`，等待轉換完成，再 `move`。
+終端機另支援 `preset slippery_trot`、`preset trot`、`gait trot`、`cmd frequency 2.8`、`status`、`stop`、`exit`。
+兩個 preset 都使用目前載入的 v8 模型，改變步態參數。
 
-`lo` 是同一台電腦內模擬器與 Controller 之間的 DDS 介面，手機使用 HTTP／WebSocket 連線。
+網頁開啟 `http://127.0.0.1:8080`；手機使用同一區域網路上的 `http://電腦IP:8080`。
+操作順序為 **取得控制 → Stand → 等待完成 → Move**。
+網頁控制台目前使用 WTW 入口，詳見 [網頁說明](web/README.md)。
 
-## 其他操作方式
+WTW v8 已通過部分模擬直行／停止測試，部分左轉仍未通過整體驗收；模型評估紀錄保存在對應模型目錄。
+
+## 模型與通訊設定
+
+兩個入口都支援 `--config 設定檔.yaml`、`--domain-id 數字` 與網卡名稱參數。
+模型相對路徑以 YAML 所在目錄為準；policy 與 metadata 成對保存。
+`lo` 用於本機模擬，實機網卡與 DDS domain 需依實際連線設定。
 
 ```bash
-# pygame 鍵盤面板，需要圖形桌面與 requirements/keyboard.txt
-python little_white_wtw.py lo
-
-# 僅使用終端機
-python little_white_wtw.py lo --no-gui
-
-# 自訂網頁連接埠或控制設定
-python little_white_wtw.py lo --web --web-port 8081
-python little_white_wtw.py --config little_white_wtw.yaml --web
+# 無 DDS 的模型／關節映射檢查
+python little_white_mjlab.py --check-mapping ../csl_mujoco/unitree_robots/little_white_v3/scene.xml
+python little_white_wtw.py --check-mapping ../csl_mujoco/unitree_robots/little_white_v3/scene.xml
 ```
 
-終端機指令包括 `stand`、`sit`、`move`、`stop`、`gait trot`、`cmd frequency 2.8`、`status`、`exit`。完整網頁操作與通訊介面請看 [網頁控制台說明](web/README.md)。
-
-## 專案結構
+## 目錄
 
 ```text
 little_white_rl_deploy/
-├── little_white_wtw.py       # 啟動入口、policy runtime、DDS Controller
-├── little_white_wtw.yaml     # 預設模型、通訊與控制設定
-├── wtw_commands.py          # 共用指令、參數範圍、步態
-├── wtw_teleop.py            # pygame 鍵盤面板
-├── requirements.txt        # 基礎 Python 依賴入口
-├── requirements/           # base／web／keyboard／dev 依賴組合
-├── pre_train/              # policy 與 metadata，兩者成對保存
-├── web/
-│   ├── control.py          # 控制權、指令驗證、操控逾時
-│   ├── bridge.py           # Controller 與網頁子程序之間的有界 IPC
-│   ├── server.py           # FastAPI、HTTP、WebSocket
-│   ├── frontend/           # TypeScript、CSS、Three.js 與模型原始資源
-│   └── dist/               # 已建置的離線網頁，納入 Git
-├── tests/                  # 單元測試、DDS／瀏覽器整合、效能量測
-└── docs/                   # 安裝、架構、驗證記錄與介面截圖
+├── little_white_mjlab.py / .yaml   # MJLab 主程式與設定
+├── mjlab_runtime.py               # MJLab 觀測、歷史、推論及關節映射
+├── mjlab_teleop.py                # MJLab 鍵盤
+├── little_white_wtw.py / .yaml    # WTW 推論與共用 DDS Controller
+├── wtw_commands.py               # WTW 指令與步態
+├── wtw_motion.py                 # WTW 速度限制
+├── wtw_teleop.py                  # WTW 鍵盤
+├── pre_train/                    # 目前使用的兩顆 policy、metadata、模型說明
+├── requirements/                 # base／keyboard／web 依賴
+├── web/                          # WTW 網頁後端、前端原始碼與離線建置結果
+└── docs/                         # 安裝、架構、原版對照
 ```
 
-保留根目錄的既有入口與 YAML 路徑，現有啟動指令可繼續使用。預設 policy 為 `wtw_stand_still`；另一份 `wtw_idle_consistent_v3` 是候選模型，詳見 [模型說明](pre_train/README.md)。
+MJLab 借用 WTW 檔案內的 DDS Controller，因此保留兩組執行程式。
+`web/dist/` 是網頁執行必要的離線資源；`web/frontend/` 用來修改與重建網頁。
+前端建置方式為 `cd web/frontend && npm ci && npm run build`，建置後一併提交 `web/dist/`。
 
-## 開發與驗證
+## Git
 
-```bash
-uv pip install --python "$(python -c 'import sys; print(sys.executable)')" -r requirements/dev.txt
-python -m pytest -q tests
-python little_white_wtw.py --check-mapping ../csl_mujoco/unitree_robots/little_white_v3/scene.xml
-
-cd web/frontend
-npm ci
-npm run build
-npm test
-```
-
-修改前端後，將新的 `web/dist/` 與原始碼一起提交。整合測試、效能測試及既有結果見 [驗證記錄](docs/validation.md)，資料流與控制邏輯見 [架構說明](docs/architecture.md)。
-
-## 提交到 GitHub
-
-納入程式、設定、兩份 policy／metadata、前端原始碼、`package-lock.json`、`web/dist/`、文件及資源授權。`.gitignore` 會排除虛擬環境、`node_modules`、快取、日誌、測試結果及 `*.local.yaml` 等本機設定。
-
-先確認 `origin` 是要推送的 repository，再提交目前工作樹的變更：
+提交程式、YAML、兩顆 policy／metadata、網頁原始碼／建置結果與第三方授權。
+測試、舊權重、備份、node_modules 和執行快取不在目前部署內容中。
 
 ```bash
-git remote -v
 git status --short
+git diff --check
 git add -A
 git diff --cached --stat
-git commit -m "Add WTW deployment and offline phone dashboard"
-git push origin HEAD
+git commit -m "Clean deployment layout and add MJLab omni walking"
+git remote -v
+# 確認遠端與分支後再 push
 ```
-
-`git add -A` 也會記錄工作樹中已刪除的舊檔案；提交前可用 `git diff --cached --name-status` 確認。
-
-第三方 URDF／mesh 來源授權保存在 `web/frontend/public/robot/LICENSE`，Three.js 與 URDFLoader 的授權保存在 `web/frontend/public/licenses/`，並隨 `web/dist/` 提供。

@@ -9,7 +9,6 @@
 | 推論檢查／終端機控制 | `requirements.txt` 或 `requirements/base.txt` |
 | 手機網頁控制 | `requirements/web.txt` |
 | pygame 鍵盤面板 | `requirements/keyboard.txt` |
-| Python、MuJoCo、瀏覽器測試 | `requirements/dev.txt` |
 
 在專案根目錄執行，例如：
 
@@ -19,7 +18,7 @@ uv pip install --python "$(python -c 'import sys; print(sys.executable)')" -r re
 
 uv 建立的環境可能沒有 `pip`；`uv pip` 不需要在目標環境安裝 pip。若環境已有 pip，也可以使用 `python -m pip install -r requirements/web.txt`。不要只執行另一個環境的 `pip`，以免依賴裝到錯誤位置。
 
-既有 `web/requirements.txt` 仍保留，供已具備基礎環境的人單獨安裝網頁依賴。`web/requirements-dev.txt` 則只加上網頁與測試工具；完整開發依賴使用根目錄的 `requirements/dev.txt`。
+既有 `web/requirements.txt` 仍保留，供已具備基礎環境的人單獨安裝網頁依賴。測試依賴不納入部署專案。
 
 ## 建立全新環境
 
@@ -59,7 +58,7 @@ workspace/
 └── unitree_sdk2_python/      # 若由原始碼安裝 SDK
 ```
 
-模擬器環境需要 MuJoCo、pygame 與 DDS；`requirements/dev.txt` 包含 Python 模擬／測試依賴，但不包含模擬器原始碼或 DDS 系統函式庫。
+模擬器環境需要 MuJoCo、pygame 與 DDS；請依 `csl_mujoco` 的安裝說明準備，部署依賴不包含模擬器原始碼與 DDS 系統函式庫。
 
 核對 `csl_mujoco/simulate_python/config.py`：
 
@@ -79,7 +78,6 @@ INTERFACE = "lo"
 cd web/frontend
 npm ci
 npm run build
-npm test
 ```
 
 前端原始資源放在 `web/frontend/public/`，建置後複製到 `web/dist/`；請一起提交建置結果，維持離線部署能力。

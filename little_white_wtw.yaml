@@ -1,7 +1,16 @@
 # Paths are relative to this YAML file.
-policy_path: pre_train/wtw/wtw_stand_still/policy.pt
-metadata_path: pre_train/wtw/wtw_stand_still/metadata.json
+policy_path: pre_train/wtw/wtw_slippery_trot_v8/policy.pt
+metadata_path: pre_train/wtw/wtw_slippery_trot_v8/metadata.json
 device: cpu
+# v8 seed 88 / update 2000: simulation candidate; left turning still fails release gates.
+motion_preset: slippery_trot
+command_limits:
+  planar_acceleration: 0.4
+  planar_deceleration: 0.6
+  yaw_acceleration: 0.8
+  straight_speed: 0.6
+  turning_speed: 0.3
+  turning_yaw_threshold: 0.05
 
 # Match csl_mujoco/simulate_python/config.py.
 domain_id: 1
@@ -33,7 +42,7 @@ observation_clip: 100.0
 
 # vx, vy, yaw_rate, height offset, frequency, phase, offset, bound,
 # duty factor, swing height, pitch, roll, stance width, stance length, aux.
-cmd_init: [0.0, 0.0, 0.0, 0.0, 2.5, 0.5, 0.0, 0.0, 0.5, 0.06, 0.0, 0.0, 0.2929094785, 0.35649931395, 0.0]
+cmd_init: [0.0, 0.0, 0.0, 0.0, 2.5, 0.5, 0.0, 0.0, 0.6, 0.04, 0.0, 0.0, 0.2929094785, 0.35649931395, 0.0]
 cmd_scale: [2.0, 2.0, 0.25, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.15, 0.3, 0.3, 1.0, 1.0, 1.0]
 
 use_gui: true
@@ -41,7 +50,7 @@ use_gui: true
 max_lin: 0.6
 max_backward: 0.3
 max_lateral: 0.25
-max_ang: 0.75
+max_ang: 0.3
 # Same keyboard bounds as sim2sim_mujoco/wtw_commands.py.
 wtw_keyboard_limits:
   height: [-0.04, 0.04]

@@ -1,0 +1,377 @@
+{
+  "formally_accepted": false,
+  "selected": {
+    "seed": 88,
+    "checkpoint": "/home/csl/U1_ws/walk_these_ways_mjlab/runs/wtw_slippery_trot_v8/seed_88/model_2000.pt",
+    "iteration": 2000,
+    "rank": [
+      0,
+      0,
+      -6,
+      -0.9972029067990578
+    ],
+    "stopped_reason": null,
+    "rollbacks": 0,
+    "attempted_updates": 3000
+  },
+  "candidates": [
+    {
+      "seed": 87,
+      "checkpoint": "/home/csl/U1_ws/walk_these_ways_mjlab/runs/wtw_slippery_trot_v8/seed_87/model_750.pt",
+      "iteration": 750,
+      "rank": [
+        0,
+        0,
+        -6,
+        -1.0874851088713762
+      ],
+      "stopped_reason": null,
+      "rollbacks": 0,
+      "attempted_updates": 3000
+    },
+    {
+      "seed": 88,
+      "checkpoint": "/home/csl/U1_ws/walk_these_ways_mjlab/runs/wtw_slippery_trot_v8/seed_88/model_2000.pt",
+      "iteration": 2000,
+      "rank": [
+        0,
+        0,
+        -6,
+        -0.9972029067990578
+      ],
+      "stopped_reason": null,
+      "rollbacks": 0,
+      "attempted_updates": 3000
+    }
+  ],
+  "accepted_checkpoint": null,
+  "initialization": {
+    "path": "/home/csl/U1_ws/walk_these_ways_mjlab/runs/wtw_slippery_trot_v7/seed_78/model_500.pt",
+    "sha256": "e15c6706cee73310a9e9f7e1a21cbc975074da5d87c5004d52083ac96cdfd972"
+  },
+  "comparison_baseline": {
+    "path": "/home/csl/U1_ws/walk_these_ways_mjlab/outputs/wtw_idle_consistent_v3/policy.pt",
+    "sha256": "c35aae79d427a68baf8545c3dd9e9e36e277d9a478f105fc542b4fbe6da75c58"
+  },
+  "assessment": {
+    "safe_to_continue": true,
+    "selection_passed": false,
+    "safety_failures": [],
+    "acceptance_failures": [
+      {
+        "key": "training/None/yaw_left/slippery_trot/0/1010",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381329953475584,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/None/yaw_left/slippery_trot/0/1011",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381273354292507,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/None/yaw_left/slippery_trot/0/1012",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381270530346275,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/None/yaw_left/slippery_trot/0/1013",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1538133047025322,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/None/yaw_left/slippery_trot/0/1014",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1538134226857038,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/None/yaw_left/slippery_trot/0/1015",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1538127183287051,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/None/yaw_left/slippery_trot/0/1016",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1538133203984612,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/None/yaw_left/slippery_trot/0/1017",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381331783425203,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/None/yaw_left/slippery_trot/0/1018",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381330674519486,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/None/yaw_left/slippery_trot/0/1019",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381269784235876,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/0.8/yaw_left/slippery_trot/0/1010",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381329953475584,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/0.8/yaw_left/slippery_trot/0/1011",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381273354292507,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/0.8/yaw_left/slippery_trot/0/1012",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381270530346275,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/0.8/yaw_left/slippery_trot/0/1013",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1538133047025322,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/0.8/yaw_left/slippery_trot/0/1014",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1538134226857038,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/0.8/yaw_left/slippery_trot/0/1015",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1538127183287051,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/0.8/yaw_left/slippery_trot/0/1016",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1538133203984612,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/0.8/yaw_left/slippery_trot/0/1017",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381331783425203,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/0.8/yaw_left/slippery_trot/0/1018",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381330674519486,
+        "maximum": 0.15
+      },
+      {
+        "key": "training/0.8/yaw_left/slippery_trot/0/1019",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15381269784235876,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/turn_left/slippery_trot/0/1010",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.20124570825720087,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/yaw_left/slippery_trot/0/1010",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.18171783978846476,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/turn_left/slippery_trot/0/1011",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.2012458912448487,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/yaw_left/slippery_trot/0/1011",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.18171772563690158,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/turn_left/slippery_trot/0/1012",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.20124525637959478,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/yaw_left/slippery_trot/0/1012",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1817175226844236,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/turn_left/slippery_trot/0/1013",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.20126251036507228,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/yaw_left/slippery_trot/0/1013",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.18171497685816343,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/turn_left/slippery_trot/0/1014",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.2012440005557676,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/yaw_left/slippery_trot/0/1014",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.18171632567599516,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/turn_left/slippery_trot/0/1015",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.20124567431371848,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/yaw_left/slippery_trot/0/1015",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.18171738530754347,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/turn_left/slippery_trot/0/1016",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.2012437604325865,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/yaw_left/slippery_trot/0/1016",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.18171637608408506,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/turn_left/slippery_trot/0/1017",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.20124516804996095,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/yaw_left/slippery_trot/0/1017",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.18171711873781718,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/turn_left/slippery_trot/0/1018",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.20124523349340964,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/yaw_left/slippery_trot/0/1018",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1817172700884478,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/turn_left/slippery_trot/0/1019",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.20124598121421933,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/None/yaw_left/slippery_trot/0/1019",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1817179029787019,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/0.8/yaw_left/slippery_trot/0/1010",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15316023273947965,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/0.8/yaw_left/slippery_trot/0/1011",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15316654462421597,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/0.8/yaw_left/slippery_trot/0/1012",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15316500947514483,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/0.8/yaw_left/slippery_trot/0/1013",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15316253122110188,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/0.8/yaw_left/slippery_trot/0/1014",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15315984187683163,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/0.8/yaw_left/slippery_trot/0/1015",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15316642868877986,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/0.8/yaw_left/slippery_trot/0/1016",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15316488268918851,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/0.8/yaw_left/slippery_trot/0/1017",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15316325231819988,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/0.8/yaw_left/slippery_trot/0/1018",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.15316335274857698,
+        "maximum": 0.15
+      },
+      {
+        "key": "original/0.8/yaw_left/slippery_trot/0/1019",
+        "metric": "yaw_tracking_rmse",
+        "actual": 0.1531652393176395,
+        "maximum": 0.15
+      }
+    ],
+    "infrastructure_failures": [],
+    "rank": [
+      0,
+      0,
+      -50,
+      -1.023381919320672
+    ],
+    "fast_tracking_slip_cost": 1.023381919320672
+  },
+  "hardware_deployed": false,
+  "normal_policy": {
+    "path": "/home/csl/U1_ws/walk_these_ways_mjlab/runs/wtw_idle_consistent_v3/model_4500.pt",
+    "sha256": "353e2764e63e5e5ab96bfcf83009e6ef6989df9b77a05433ccb3b5e96a8e19e5",
+    "frozen": true
+  }
+}

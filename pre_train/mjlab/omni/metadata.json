@@ -1,0 +1,121 @@
+{
+  "command_profile": "omni",
+  "training_command_ranges": {
+    "lin_vel_x": [
+      -0.2,
+      1.0
+    ],
+    "lin_vel_y": [
+      -0.3,
+      0.3
+    ],
+    "ang_vel_z": [
+      -0.5,
+      0.5
+    ]
+  },
+  "history_length": 20,
+  "history_order": "oldest_to_newest",
+  "term_names": [
+    "base_ang_vel",
+    "projected_gravity",
+    "joint_pos",
+    "joint_vel",
+    "actions",
+    "command"
+  ],
+  "term_dims": [
+    3,
+    3,
+    12,
+    12,
+    12,
+    3
+  ],
+  "joint_names": [
+    "FR_Hip_joint",
+    "FR_Thigh_joint",
+    "FR_Calf_joint",
+    "FL_Hip_joint",
+    "FL_Thigh_joint",
+    "FL_Calf_joint",
+    "RL_Hip_joint",
+    "RL_Thigh_joint",
+    "RL_Calf_joint",
+    "RR_Hip_joint",
+    "RR_Thigh_joint",
+    "RR_Calf_joint"
+  ],
+  "default_joint_pos": [
+    0.0,
+    0.949999988079071,
+    -1.7000000476837158,
+    0.0,
+    0.949999988079071,
+    -1.7000000476837158,
+    0.0,
+    0.949999988079071,
+    -1.7000000476837158,
+    0.0,
+    0.949999988079071,
+    -1.7000000476837158
+  ],
+  "policy_hz": 50.0,
+  "physics_dt": 0.005,
+  "kp": 20.0,
+  "kd": 0.5,
+  "effort_limit_nm": 27.0,
+  "action_scale": 0.25,
+  "command_frame": "body_velocity",
+  "quaternion_order": "wxyz",
+  "reset_history": "repeat_first_observation",
+  "normalization": "included_in_policy_do_not_normalize_again",
+  "actor_cfg": {
+    "hidden_dims": [
+      512,
+      256,
+      128
+    ],
+    "activation": "elu",
+    "obs_normalization": true,
+    "distribution_cfg": {
+      "class_name": "GaussianDistribution",
+      "init_std": 1.0,
+      "std_type": "scalar"
+    },
+    "class_name": "MLPModel"
+  },
+  "task": "Mjlab-Velocity-BlindRough-Friction-LittleWhiteV3",
+  "source_checkpoint": "/home/uie/U1_ws/mjlab/logs/rsl_rl/little_white_v3_blind_rough_omni/2026-10-17_23-42-07_omni/best.pt",
+  "input_shape": [
+    "batch",
+    20,
+    45
+  ],
+  "output_shape": [
+    "batch",
+    12
+  ],
+  "observation_units": [
+    "rad/s",
+    "unit_vector",
+    "rad",
+    "rad/s",
+    "residual",
+    "m/s,m/s,rad/s"
+  ],
+  "frame": "right_handed_body_x_forward_y_left_z_up",
+  "sensor_delay_training_ms": [
+    0,
+    20
+  ],
+  "deployment_status": "simulation_validated_only_see_evaluation_report",
+  "required_0_6_passed": false,
+  "validation_profile": "omni",
+  "validated_targets": {
+    "forward_m_s": 0.6,
+    "lateral_m_s": 0.6,
+    "yaw_rad_s": 0.6
+  },
+  "evaluation_report": "/home/uie/U1_ws/mjlab/logs/rsl_rl/little_white_v3_blind_rough_omni/2026-10-17_23-42-07_omni/evaluation/report.json"
+}
