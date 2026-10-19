@@ -4,8 +4,8 @@
 
 | 版本 | 入口 | 模型 | 控制方式 |
 |---|---|---|---|
-| MJLab omni | `little_white_mjlab.py` | `pre_train/mjlab/omni/` | 鍵盤、終端機 |
-| WTW v8 | `little_white_wtw.py` | `pre_train/wtw/wtw_slippery_trot_v8/` | 鍵盤、終端機、手機網頁 |
+| MJLab omni | `little_white_mjlab.py` | `pre_train/mjlab/omni/` | 鍵盤、搖桿、終端機 |
+| WTW v8 | `little_white_wtw.py` | `pre_train/wtw/wtw_slippery_trot_v8/` | 鍵盤、搖桿、終端機、手機網頁 |
 
 ## 安裝
 
@@ -79,6 +79,30 @@ WTW 鍵盤為按住 W/S、A/D、Q/E 移動，放開歸零；終端機先 `stand`
 
 WTW v8 已通過部分模擬直行／停止測試，部分左轉仍未通過整體驗收；模型評估紀錄保存在對應模型目錄。
 
+## 搖桿控制（MJLab／WTW 共用）
+
+使用 `requirements/keyboard.txt` 的 pygame 依賴，不開啟鍵盤視窗。接上手把後執行：
+
+```bash
+python headless_teleop.py --list
+# 啟動 MuJoCo 後，以下擇一
+python little_white_mjlab.py lo --gamepad
+python little_white_wtw.py lo --gamepad
+```
+
+終端機輸入 `stand`，等 3 秒，再輸入 `move`，將搖桿置中後即可操作。
+左搖桿控制前後／側移，右搖桿控制轉向，回到中心即送出零速度。
+按鈕 0（常見為 A／叉）讓速度指令歸零；放開按鈕並置中才恢復。
+終端機 `stop` 切換阻尼。WTW 保留原本速度漸變，零速度指令不代表瞬間停止。
+斷線、輸入程序停止或超過 0.25 秒未更新時送出零速度；重新連線後需置中。
+
+各版本 YAML 的 `gamepad` 區塊可調整裝置、軸編號、方向、按鈕與死區。
+預設前後 axis 1、側移 axis 0、轉向 axis 3；不同手把可能不同。
+用 `python headless_teleop.py --device 0` 查看原始軸與按鈕編號，Ctrl+C 結束。
+速度上限使用 YAML 的 `max_lin`、`max_backward`、`max_lateral`、`max_ang`，並受模型範圍限制。
+手把只控制速度，不調高度／步態或切換站立模式；手把模式停用終端機速度指令。
+WTW 的 `--gamepad` 與 `--web` 不可同時使用；未加 `--gamepad` 維持原本鍵盤操作。
+
 ## 模型與通訊設定
 
 兩個入口都支援 `--config 設定檔.yaml`、`--domain-id 數字` 與網卡名稱參數。
@@ -98,6 +122,7 @@ little_white_rl_deploy/
 ├── little_white_mjlab.py / .yaml   # MJLab 主程式與設定
 ├── mjlab_runtime.py               # MJLab 觀測、歷史、推論及關節映射
 ├── mjlab_teleop.py                # MJLab 鍵盤
+├── headless_teleop.py             # 共用搖桿與裝置檢查
 ├── little_white_wtw.py / .yaml    # WTW 推論與共用 DDS Controller
 ├── wtw_commands.py               # WTW 指令與步態
 ├── wtw_motion.py                 # WTW 速度限制

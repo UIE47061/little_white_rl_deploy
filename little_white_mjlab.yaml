@@ -30,3 +30,17 @@ sit_angles: [-0.4, 1.2, -2.78, 0.4, 1.2, -2.78, 0.4, 1.2, -2.78, -0.4, 1.2, -2.7
 transition_seconds: 3.0
 state_timeout: 0.5
 startup_timeout: 10.0
+
+# Physical gamepad (--gamepad). Inspect axes with python headless_teleop.py.
+# Uses max_lin/max_backward/max_lateral/max_ang above and model limits.
+gamepad:
+  device_index: 0
+  forward_axis: 1
+  lateral_axis: 0
+  yaw_axis: 3
+  forward_sign: -1
+  lateral_sign: -1
+  yaw_sign: -1
+  zero_button: 0
+  deadzone: 0.1
+  timeout: 0.25

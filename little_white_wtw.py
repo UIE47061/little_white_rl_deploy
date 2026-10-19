@@ -252,7 +252,7 @@ class WTWPolicy:
 
 
 class Controller:
-    def __init__(self, runtime, use_gui=True):
+    def __init__(self, runtime, use_gui=True, use_gamepad=False):
         self.runtime = runtime
         self.config = runtime.config
         self.lock = threading.RLock()
@@ -266,6 +266,7 @@ class Controller:
         self.thread = None
         self.teleop = None
         self.use_gui = use_gui
+        self.use_gamepad = use_gamepad
         self.web_control = None
 
     def Init(self):
@@ -290,7 +291,10 @@ class Controller:
             if time.monotonic() >= deadline:
                 raise TimeoutError("No valid rt/lowstate received; start the simulator first")
             time.sleep(0.01)
-        if self.use_gui:
+        if self.use_gamepad:
+            from headless_teleop import HeadlessTeleop
+            self.teleop = HeadlessTeleop(self.runtime.commands, self.config, self.runtime.metadata)
+        elif self.use_gui:
             self.teleop = create_teleop(self.config, self.runtime.commands)
         self.running = True
         self.thread = threading.Thread(target=self.LowCmdWrite, name="wtw_lowcmd")
@@ -329,6 +333,9 @@ class Controller:
             self.transition_q = self.state[0].copy()
             self.runtime.reset()
             self.target = self.runtime.default[self.runtime.motor_to_policy].copy()
+            if self.use_gamepad and self.teleop is not None:
+                self.runtime.commands[:3] = 0
+                self.teleop.set_command(self.runtime.commands, velocity_override=True)
 
     def _publish(self, target=None):
         # Do not close the PD loop through delayed DDS state feedback. Send
@@ -416,6 +423,8 @@ class Controller:
                     self.teleop.set_command(self.runtime.commands)
             elif len(words) == 3 and words[0] in ("cmd", "ctl"):
                 index = 14 if words[1] == "idle_step" else self.runtime.metadata["command_names"].index(words[1])
+                if self.use_gamepad and index < 3:
+                    raise ValueError('Velocity is controlled by the gamepad; use stop for damping')
                 candidate = self.runtime.commands.copy()
                 candidate[index] = float(words[2])
                 self.runtime.validate_commands(candidate)
@@ -450,6 +459,7 @@ def main():
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--domain-id", type=int)
     parser.add_argument("--no-gui", action="store_true")
+    parser.add_argument("--gamepad", action="store_true", help="Use a physical gamepad instead of the keyboard panel")
     parser.add_argument("--web", action="store_true", help="Use the phone dashboard instead of keyboard/console")
     parser.add_argument("--web-host", default="0.0.0.0")
     parser.add_argument("--web-port", type=int, default=8080)
@@ -457,6 +467,8 @@ def main():
     parser.add_argument("--check-mapping", type=Path, metavar="SCENE_XML",
                         help="Verify DDS actuator/sensor order against a MuJoCo scene; no DDS or GUI")
     args = parser.parse_args()
+    if args.gamepad and args.web:
+        parser.error('--gamepad and --web select different control sources; choose one')
     runtime = WTWPolicy(args.config)
     if args.check or args.check_mapping:
         q = runtime.default[runtime.motor_to_policy].copy()
@@ -479,7 +491,8 @@ def main():
         check_dependencies()
         if not (Path(__file__).parent / "web/dist/index.html").is_file():
             parser.error("Web assets missing; run npm ci && npm run build in web/frontend")
-    controller = Controller(runtime, runtime.config["use_gui"] and not args.no_gui and not args.web)
+    controller = Controller(runtime, runtime.config["use_gui"] and not args.no_gui and not args.web,
+                            use_gamepad=args.gamepad)
     bridge = None
     try:
         controller.Init()
@@ -493,6 +506,9 @@ def main():
                 time.sleep(0.1)
             return
         print(f"Policy: {runtime.policy_path}; preset: {runtime.preset}")
+        if args.gamepad:
+            print('Gamepad: left stick=forward/lateral, right stick=yaw; button 0=zero velocity. '
+                  'Center sticks after stand/move. Console stop=damping.')
         print("Commands: stand, move, sit, stop, preset trot/slippery_trot, gait <name>, cmd <name> <value>, ctl idle_step <0|1>, status, exit")
         while controller.running:
             text = input("CMD: ").strip()

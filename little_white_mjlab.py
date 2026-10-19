@@ -14,9 +14,9 @@ DEFAULT_CONFIG = Path(__file__).with_suffix('.yaml')
 
 class Controller(DDSController):
     """Reuse DDS transport/timing; observations and actions belong to MJLab."""
-    def __init__(self, runtime, use_gui=False):
-        super().__init__(runtime, use_gui=False)
-        self.keyboard_enabled = use_gui
+    def __init__(self, runtime, use_gui=False, use_gamepad=False):
+        super().__init__(runtime, use_gui=False, use_gamepad=use_gamepad)
+        self.keyboard_enabled = use_gui and not use_gamepad
 
     def Init(self):
         super().Init()
@@ -63,6 +63,8 @@ class Controller(DDSController):
                     raise RuntimeError(f'Controller is not running: {self.error}')
                 self.set_mode(words[0])
             elif len(words) == 4 and words[0] == 'cmd':
+                if self.use_gamepad:
+                    raise ValueError('Velocity is controlled by the gamepad; use stop for damping')
                 if self.mode != 'move':
                     raise ValueError('Use move before sending velocity commands')
                 commands = vector([float(v) for v in words[1:]], 3, 'velocity commands')
@@ -85,6 +87,7 @@ def main():
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--check-mapping', type=Path)
     parser.add_argument('--no-gui', action='store_true', help='Disable the keyboard panel')
+    parser.add_argument('--gamepad', action='store_true', help='Use a physical gamepad instead of the keyboard panel')
     args = parser.parse_args()
     runtime = MJLabPolicy(args.config)
     if args.check or args.check_mapping:
@@ -101,13 +104,16 @@ def main():
     domain = args.domain_id if args.domain_id is not None else runtime.config['domain_id']
     interface = args.interface or runtime.config['interface']
     ChannelFactoryInitialize(domain, interface)
-    controller = Controller(runtime, use_gui=not args.no_gui)
+    controller = Controller(runtime, use_gui=not args.no_gui, use_gamepad=args.gamepad)
     try:
         controller.Init()
         print(f'MJLab ready on domain {domain}, interface {interface}; mode=damping.')
-        print('stand -> wait 3 seconds -> move -> cmd 0.2 0 0')
+        print('stand -> wait 3 seconds -> move')
         print('Commands: stand, sit, move, stop, cmd <vx> <vy> <yaw>, status, exit')
-        if controller.teleop is not None:
+        if args.gamepad:
+            print('Gamepad: left stick=forward/lateral, right stick=yaw; button 0=zero velocity. '
+                  'Center sticks after stand/move. Console stop=damping.')
+        elif controller.teleop is not None:
             print(f"Keyboard mode: {runtime.config.get('keyboard_mode', 'incremental')}; "
                   'W/S, A/D, Q/E; Space/Esc=zero velocity. Focus the panel first.')
         while controller.running:
