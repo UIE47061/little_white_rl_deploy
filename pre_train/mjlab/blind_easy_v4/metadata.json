@@ -1,0 +1,91 @@
+{
+  "schema_version": 3,
+  "task": "Mjlab-Velocity-Blind-Easy-Little-White-V3-Gait-V4",
+  "source_checkpoint": "/home/csl/U1_ws/mjlab/logs/rsl_rl/little_white_v3_blind_v4_easy/2026-10-31_14-18-47_blind_easy_v4_seed46/model_2999.pt",
+  "source_checkpoint_sha256": "9364668b38563debdee46959df47986ec63dc9a87a7824175fffaeea1bc1d6ff",
+  "policy_sha256": "f254e86f0f08e653ead1f1b8463962ff5968530193040244d3767a5aa86ce8d7",
+  "input_shape": [
+    "batch",
+    48
+  ],
+  "output_shape": [
+    "batch",
+    12
+  ],
+  "history_length": 1,
+  "term_names": [
+    "base_lin_vel",
+    "base_ang_vel",
+    "projected_gravity",
+    "joint_pos",
+    "joint_vel",
+    "actions",
+    "command"
+  ],
+  "term_dims": [
+    3,
+    3,
+    3,
+    12,
+    12,
+    12,
+    3
+  ],
+  "joint_names": [
+    "FR_hip_joint",
+    "FR_thigh_joint",
+    "FR_calf_joint",
+    "FL_hip_joint",
+    "FL_thigh_joint",
+    "FL_calf_joint",
+    "RL_hip_joint",
+    "RL_thigh_joint",
+    "RL_calf_joint",
+    "RR_hip_joint",
+    "RR_thigh_joint",
+    "RR_calf_joint"
+  ],
+  "default_joint_pos": [
+    0.0,
+    0.95,
+    -1.7,
+    0.0,
+    0.95,
+    -1.7,
+    0.0,
+    0.95,
+    -1.7,
+    0.0,
+    0.95,
+    -1.7
+  ],
+  "kp": 40.0,
+  "kd": 0.1,
+  "effort_limit_nm": 27.0,
+  "action_scale": 0.25,
+  "action_clip": null,
+  "physics_dt": 0.005,
+  "policy_hz": 50.0,
+  "training_command_ranges": {
+    "lin_vel_x": [
+      -0.6,
+      1.0
+    ],
+    "lin_vel_y": [
+      -0.6,
+      0.6
+    ],
+    "ang_vel_z": [
+      -0.6,
+      0.6
+    ]
+  },
+  "quaternion_order": "wxyz",
+  "linear_velocity_frame": "body",
+  "normalization": "included_in_policy_do_not_normalize_again",
+  "joint_position_mode": "relative",
+  "observation_units": "unscaled_physical_units",
+  "terrain_height_scan": false,
+  "deployment_status": "export_and_interface_checked_walking_not_validated",
+  "export_max_absolute_error": 0.0
+}

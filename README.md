@@ -4,7 +4,7 @@
 
 | 版本 | 入口 | 模型 | 控制方式 |
 |---|---|---|---|
-| MJLab omni | `little_white_mjlab.py` | `pre_train/mjlab/omni/` | 鍵盤、搖桿、終端機 |
+| MJLab blind easy v4 | `little_white_mjlab.py` | `pre_train/mjlab/blind_easy_v4/` | 鍵盤、搖桿、終端機 |
 | WTW v8 | `little_white_wtw.py` | `pre_train/wtw/wtw_slippery_trot_v8/` | 鍵盤、搖桿、終端機、手機網頁 |
 
 ## 安裝
@@ -34,11 +34,49 @@ python unitree_mujoco.py
 
 ## MJLab 行走
 
+目前使用本機 `blind_easy_v4_seed46/model_2999.pt`，PD 為 **40 / 0.1**，
+控制頻率 50 Hz。單幀 48 維觀測，不使用歷史堆疊或地形高度掃描；
+觀測正規化已包在模型內。舊的 `pre_train/mjlab/omni/` 留存，但不再由預設設定載入。
+
+程式依原版 `little_white_isaaclab.py` 的單一 `Controller` 架構整理：
+`Init()` 建立 DDS、`LowStateMessageHandler()` 更新狀態、
+`stand()/sit()/move()` 處理模式、`step()` 執行 policy、
+`LowCmdWrite()` 定時發送。模型載入、觀測與關節映射均放在
+`little_white_mjlab.py`，不依賴 WTW 或另外的 runtime 模組。
+PD、預設姿態與 action scale 明列在 YAML，啟動時與訓練 metadata 核對。
+
+使用已備妥的 Python 3.10 環境（若目前在 mjlab venv，先 `deactivate`）：
+
+```bash
+conda activate unitree_mujoco
+cd /home/csl/U1_ws/little_white_rl_deploy
+```
+
 ```bash
 python little_white_mjlab.py --check
 python little_white_mjlab.py lo
 # 純終端機
 python little_white_mjlab.py lo --no-gui
+```
+
+除了 `rt/lowstate`，此模型需要 `rt/sportmodestate.velocity` 的三軸線速度。
+本機模擬器提供世界座標速度，YAML 設 `linear_velocity_frame: world`，
+推論前用 IMU 四元數轉成機身座標。速度缺失或超過 0.5 秒未更新時不允許進入行走；
+行走途中失效則控制迴圈結束並送出阻尼。實機需提供等價的速度估計，並確認訊息座標系。
+
+已檢查匯出前後 actor 輸出一致、MuJoCo 感測器觀測與關節映射；
+此 rough checkpoint 尚未完成步態評估與 sim2sim 行走驗證。
+
+重新匯出與離線測試：
+
+```bash
+cd ../mjlab
+uv run --no-sync ../little_white_rl_deploy/export_mjlab_policy.py \
+  --checkpoint logs/rsl_rl/little_white_v3_blind_v4_easy/2026-10-31_14-18-47_blind_easy_v4_seed46/model_2999.pt \
+  --output ../little_white_rl_deploy/pre_train/mjlab/blind_easy_v4
+# 匯出會產生新的 SHA256，需同步填入 little_white_mjlab.yaml。
+cd ../little_white_rl_deploy
+python -m unittest discover -s tests -v
 ```
 
 在終端機輸入 `stand`，等 3 秒後輸入 `move`，再點選鍵盤面板：
@@ -120,7 +158,7 @@ python little_white_wtw.py --check-mapping ../csl_mujoco/unitree_robots/little_w
 ```text
 little_white_rl_deploy/
 ├── little_white_mjlab.py / .yaml   # MJLab 主程式與設定
-├── mjlab_runtime.py               # MJLab 觀測、歷史、推論及關節映射
+├── export_mjlab_policy.py          # 訓練環境用的模型匯出工具
 ├── mjlab_teleop.py                # MJLab 鍵盤
 ├── headless_teleop.py             # 共用搖桿與裝置檢查
 ├── little_white_wtw.py / .yaml    # WTW 推論與共用 DDS Controller
@@ -133,7 +171,7 @@ little_white_rl_deploy/
 └── docs/                         # 安裝、架構、原版對照
 ```
 
-MJLab 借用 WTW 檔案內的 DDS Controller，因此保留兩組執行程式。
+MJLab 與 WTW 各自使用獨立 Controller；鍵盤與搖桿工具仍分檔保存。
 `web/dist/` 是網頁執行必要的離線資源；`web/frontend/` 用來修改與重建網頁。
 前端建置方式為 `cd web/frontend && npm ci && npm run build`，建置後一併提交 `web/dist/`。
 

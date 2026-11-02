@@ -1,11 +1,23 @@
-# Paths are relative to this file. Dedicated MJLab omni runtime.
-policy_path: pre_train/mjlab/omni/policy.pt
-metadata_path: pre_train/mjlab/omni/metadata.json
-policy_sha256: 808ac4a3fc1c5d0c24a2c7b7f40864c545ce0d7e7939b3857cb6e64383bf7284
+# Latest blind easy v4, model_2999; KP=40, KD=0.1 in metadata.
+# Paths are relative to this file.
+policy_path: pre_train/mjlab/blind_easy_v4/policy.pt
+metadata_path: pre_train/mjlab/blind_easy_v4/metadata.json
+policy_sha256: f254e86f0f08e653ead1f1b8463962ff5968530193040244d3767a5aa86ce8d7
 interface: lo
 domain_id: 1
+# csl_mujoco publishes world-frame velocity from its frame_vel sensor.
+linear_velocity_topic: rt/sportmodestate
+linear_velocity_frame: world
 dt: 0.005
 control_decimation: 4
+# Vectors use POLICY order: FR, FL, RL, RR (hip, thigh, calf per leg).
+# These values are checked against the exported training metadata.
+num_obs: 48
+num_actions: 12
+kps: [40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40]
+kds: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+default_angles: [0, 0.95, -1.7, 0, 0.95, -1.7, 0, 0.95, -1.7, 0, 0.95, -1.7]
+action_scale: [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
 motor_leg_order: [FL, FR, RL, RR]
 torque_limit: 27.0
 cmd_init: [0.0, 0.0, 0.0]
@@ -18,12 +30,13 @@ max_lin: 1.0
 max_backward: 0.6
 max_lateral: 0.6
 max_ang: 0.6
-# Provisional preprocessing: relative joints and unscaled physical units.
-# Confirm against the original training observation/action configuration.
+# Training: body linear/angular velocity, gravity, relative joints, joint
+# velocity, last raw action, command. Single frame, 48 values, no height scan.
 joint_position_mode: relative
 observation_scales: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                     1, 1, 1]
 action_clip: null
 # All pose vectors use POLICY order: FR, FL, RL, RR.
 sit_angles: [-0.4, 1.2, -2.78, 0.4, 1.2, -2.78, 0.4, 1.2, -2.78, -0.4, 1.2, -2.78]
