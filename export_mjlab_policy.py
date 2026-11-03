@@ -1,4 +1,4 @@
-"""Export the 48-observation Little White actor using its training environment.
+"""Export the 45-observation Little White actor using its training environment.
 
 Run from ../mjlab with uv run --no-sync ../little_white_rl_deploy/export_mjlab_policy.py
 --checkpoint PATH --output PATH. Runtime deployment does not require mjlab.
@@ -21,13 +21,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--checkpoint', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--task', default='Mjlab-Velocity-Blind-Easy-Little-White-V3-Gait-V4')
+    parser.add_argument('--task', default='Mjlab-Velocity-Blind-Easy-Little-White-V3-Proprio-V7')
     args = parser.parse_args()
     checkpoint = args.checkpoint.resolve()
     state = torch.load(checkpoint, map_location='cpu', weights_only=False)
     cfg = load_env_cfg(args.task, play=True)
     terms = list(cfg.observations['actor'].terms)
-    expected = ['base_lin_vel', 'base_ang_vel', 'projected_gravity',
+    expected = ['base_ang_vel', 'projected_gravity',
                 'joint_pos', 'joint_vel', 'actions', 'command']
     if terms != expected:
         raise ValueError(f'Unsupported actor terms: {terms}')
@@ -37,12 +37,12 @@ def main():
     actor_cfg = asdict(rl_cfg.actor)
     for key in ('class_name', 'cnn_cfg', 'rnn_type', 'rnn_hidden_dim', 'rnn_num_layers'):
         actor_cfg.pop(key, None)
-    obs = TensorDict({'actor': torch.zeros(1, 48)}, batch_size=[1])
+    obs = TensorDict({'actor': torch.zeros(1, 45)}, batch_size=[1])
     actor = MLPModel(obs, {'actor': ['actor']}, 'actor', 12, **actor_cfg).eval()
     actor.load_state_dict(state['actor_state_dict'], strict=True)
     exported = torch.jit.script(actor.as_jit().eval())
     generator = torch.Generator().manual_seed(46)
-    inputs = torch.randn(256, 48, generator=generator)
+    inputs = torch.randn(256, 45, generator=generator)
     with torch.inference_mode():
         reference = actor(TensorDict({'actor': inputs}, batch_size=[256]))
         actual = exported(inputs)
@@ -54,14 +54,14 @@ def main():
     actuator = cfg.scene.entities['robot'].articulation.actuators[0]
     command = cfg.commands['twist'].ranges
     metadata = {
-        'schema_version': 3,
+        'schema_version': 4,
         'task': args.task,
         'source_checkpoint': str(checkpoint),
         'source_checkpoint_sha256': hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
         'policy_sha256': hashlib.sha256(policy_path.read_bytes()).hexdigest(),
-        'input_shape': ['batch', 48], 'output_shape': ['batch', 12],
+        'input_shape': ['batch', 45], 'output_shape': ['batch', 12],
         'history_length': 1, 'term_names': terms,
-        'term_dims': [3, 3, 3, 12, 12, 12, 3],
+        'term_dims': [3, 3, 12, 12, 12, 3],
         'joint_names': [f'{leg}_{part}_joint' for leg in ('FR', 'FL', 'RL', 'RR')
                         for part in ('hip', 'thigh', 'calf')],
         'default_joint_pos': [pose[f'.*_{part}_joint'] for _ in range(4)
@@ -76,7 +76,7 @@ def main():
             name: list(getattr(command, name))
             for name in ('lin_vel_x', 'lin_vel_y', 'ang_vel_z')},
         'quaternion_order': 'wxyz',
-        'linear_velocity_frame': 'body',
+        'requires_base_linear_velocity': False,
         'normalization': 'included_in_policy_do_not_normalize_again',
         'joint_position_mode': 'relative',
         'observation_units': 'unscaled_physical_units',

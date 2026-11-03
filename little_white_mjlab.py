@@ -31,13 +31,13 @@ class Controller:
         self.config = cfg = yaml.safe_load(path.read_text())
         self.policy_path = (path.parent / cfg['policy_path']).resolve()
         self.metadata = meta = json.loads((path.parent / cfg['metadata_path']).read_text())
-        expected = {'schema_version': 3,
-                    'input_shape': ['batch', 48], 'output_shape': ['batch', 12],
+        expected = {'schema_version': 4,
+                    'input_shape': ['batch', 45], 'output_shape': ['batch', 12],
                     'history_length': 1,
-                    'term_names': ['base_lin_vel', 'base_ang_vel', 'projected_gravity', 'joint_pos',
+                    'term_names': ['base_ang_vel', 'projected_gravity', 'joint_pos',
                                    'joint_vel', 'actions', 'command'],
-                    'term_dims': [3, 3, 3, 12, 12, 12, 3], 'quaternion_order': 'wxyz',
-                    'linear_velocity_frame': 'body',
+                    'term_dims': [3, 3, 12, 12, 12, 3], 'quaternion_order': 'wxyz',
+                    'requires_base_linear_velocity': False,
                     'joint_position_mode': 'relative',
                     'observation_units': 'unscaled_physical_units',
                     'action_clip': None,
@@ -58,8 +58,8 @@ class Controller:
                                  (self.action_scale, meta['action_scale'])):
             if not np.allclose(actual, expected, rtol=0, atol=1e-7):
                 raise ValueError('YAML pose, PD or action scale differs from training metadata')
-        if cfg['num_obs'] != 48 or cfg['num_actions'] != 12:
-            raise ValueError('This policy requires 48 observations and 12 actions')
+        if cfg['num_obs'] != 45 or cfg['num_actions'] != 12:
+            raise ValueError('This policy requires 45 observations and 12 actions')
         self.dt = cfg['dt']
         self.decimation = cfg['control_decimation']
         self.control_dt = 1 / float(meta['policy_hz'])
@@ -77,14 +77,10 @@ class Controller:
         self.motor_to_policy = np.argsort(self.policy_to_motor)
         self.commands = vector(cfg['cmd_init'], 3, 'commands')
         self.validate_commands(self.commands)
-        self.scales = vector(cfg['observation_scales'], 48, 'observation_scales')
-        if (not np.array_equal(self.scales, np.ones(48)) or
+        self.scales = vector(cfg['observation_scales'], 45, 'observation_scales')
+        if (not np.array_equal(self.scales, np.ones(45)) or
                 cfg['joint_position_mode'] != 'relative' or cfg.get('action_clip') is not None):
             raise ValueError('Preprocessing differs from the training contract')
-        if cfg['linear_velocity_frame'] not in ('world', 'body'):
-            raise ValueError('linear_velocity_frame must be world or body')
-        self.linear_velocity = np.zeros(3, dtype=np.float32)
-        self.linear_velocity_time = 0.0
         self.angular_velocity = np.zeros(3, dtype=np.float32)
         torch.set_num_threads(1)
         self.policy = torch.jit.load(str(self.policy_path), map_location='cpu').eval()
@@ -128,39 +124,14 @@ class Controller:
     def reset(self):
         self.last_action = np.zeros(12, dtype=np.float32)
 
-    def update_linear_velocity(self, velocity):
-        self.linear_velocity = vector(velocity, 3, 'linear velocity').copy()
-        self.linear_velocity_time = time.monotonic()
-
-    def require_linear_velocity(self):
-        if time.monotonic() - self.linear_velocity_time > self.config['state_timeout']:
-            raise RuntimeError('No recent rt/sportmodestate linear velocity')
-
-    @staticmethod
-    def world_to_body(velocity, quaternion):
-        quat = vector(quaternion, 4, 'wxyz quaternion')
-        norm = np.linalg.norm(quat)
-        if norm < 1e-6:
-            raise ValueError('IMU quaternion is not initialized')
-        w, x, y, z = quat / norm
-        rotation = np.array([
-            [1-2*(y*y+z*z), 2*(x*y-z*w), 2*(x*z+y*w)],
-            [2*(x*y+z*w), 1-2*(x*x+z*z), 2*(y*z-x*w)],
-            [2*(x*z-y*w), 2*(y*z+x*w), 1-2*(x*x+y*y)]], dtype=np.float32)
-        return rotation.T @ velocity
-
     def observe(self, q, dq, quaternion):
-        self.require_linear_velocity()
         self.validate_commands(self.commands)
         pos = vector(q, 12, 'joint positions')[self.policy_to_motor]
         if self.config['joint_position_mode'] == 'relative':
             pos = pos - self.default_angles
         elif self.config['joint_position_mode'] != 'absolute':
             raise ValueError('joint_position_mode must be relative or absolute')
-        velocity = self.linear_velocity
-        if self.config['linear_velocity_frame'] == 'world':
-            velocity = self.world_to_body(velocity, quaternion)
-        return np.concatenate((velocity, vector(self.angular_velocity, 3, 'gyro'),
+        return np.concatenate((vector(self.angular_velocity, 3, 'gyro'),
                                self.gravity(quaternion), pos,
                                vector(dq, 12, 'joint velocities')[self.policy_to_motor],
                                self.last_action, self.commands)) * self.scales
@@ -218,15 +189,12 @@ class Controller:
 
     def Init(self):
         from unitree_sdk2py.core.channel import ChannelPublisher, ChannelSubscriber
-        from unitree_sdk2py.idl.unitree_go.msg.dds_ import LowCmd_, LowState_, SportModeState_
+        from unitree_sdk2py.idl.unitree_go.msg.dds_ import LowCmd_, LowState_
         self.InitLowCmd()
         self.lowcmd_publisher = ChannelPublisher('rt/lowcmd', LowCmd_)
         self.lowcmd_publisher.Init()
         self.lowstate_subscriber = ChannelSubscriber('rt/lowstate', LowState_)
         self.lowstate_subscriber.Init(self.LowStateMessageHandler, 10)
-        self.velocity_subscriber = ChannelSubscriber(
-            self.config['linear_velocity_topic'], SportModeState_)
-        self.velocity_subscriber.Init(self.HighStateMessageHandler, 10)
         deadline = time.monotonic() + self.config['startup_timeout']
         while not self.state_time:
             if time.monotonic() >= deadline:
@@ -238,9 +206,18 @@ class Controller:
         elif self.use_gui:
             if (os.environ.get('DISPLAY') or os.environ.get('WAYLAND_DISPLAY') or
                     os.environ.get('SDL_VIDEODRIVER') == 'dummy'):
-                from mjlab_teleop import MJLabTeleop
-                self.teleop = MJLabTeleop(
-                    self.commands, self.metadata['training_command_ranges'], self.config)
+                from gui_teleop import GUITeleop
+                ranges = self.metadata['training_command_ranges']
+                self.teleop = GUITeleop(
+                    config_init=self.commands,
+                    lin_step=self.config['keyboard_linear_step'],
+                    ang_step=self.config['keyboard_angular_step'],
+                    max_lin=min(self.config['max_lin'], ranges['lin_vel_x'][1]),
+                    max_backward=min(self.config['max_backward'], -ranges['lin_vel_x'][0]),
+                    max_lateral=min(self.config['max_lateral'], ranges['lin_vel_y'][1],
+                                    -ranges['lin_vel_y'][0]),
+                    max_ang=min(self.config['max_ang'], ranges['ang_vel_z'][1],
+                                -ranges['ang_vel_z'][0]))
             else:
                 print('No desktop display; use console commands.')
         self.Start()
@@ -258,7 +235,7 @@ class Controller:
             self.teleop.close()
         if hasattr(self, 'lowcmd_publisher'):
             self._publish()
-        for name in ('lowstate_subscriber', 'velocity_subscriber', 'lowcmd_publisher'):
+        for name in ('lowstate_subscriber', 'lowcmd_publisher'):
             channel = getattr(self, name, None)
             if channel is not None:
                 channel.Close()
@@ -276,14 +253,6 @@ class Controller:
             self.low_state = msg
             self.qpos, self.qvel, self.quat, self.angular_velocity = qpos, qvel, quat, ang_vel
             self.state_time = time.monotonic()
-
-    def HighStateMessageHandler(self, msg):
-        try:
-            velocity = vector(msg.velocity, 3, 'linear velocity')
-        except ValueError:
-            return
-        with self.lock:
-            self.update_linear_velocity(velocity)
 
     def get_current_state(self):
         return self.qpos.copy(), self.qvel.copy(), self.angular_velocity.copy(), self.quat.copy()
@@ -305,7 +274,6 @@ class Controller:
                     if (self.mode != 'stand' or time.monotonic()-self.transition_start <
                             self.config['transition_seconds']):
                         raise ValueError('Use stand and wait for the transition before move')
-                    self.require_linear_velocity()
             self.mode = mode
             self.commands[:] = 0
             self.reset_timer()
@@ -335,7 +303,7 @@ class Controller:
         self._transition(self.sit_angles)
 
     def step(self):
-        # Training order: lin_vel, ang_vel, gravity, q-relative, dq, action, cmd.
+        # Training order: ang_vel, gravity, q-relative, dq, action, cmd (45).
         qpos, qvel, _, quat = self.get_current_state()
         self.target_dof_pos = self.infer(qpos, qvel, quat)
         return self.last_action.copy()
@@ -434,12 +402,11 @@ def main():
     controller = Controller(args.config, use_gui=not args.no_gui, use_gamepad=args.gamepad)
     if args.check or args.check_mapping:
         q = controller.default_angles[controller.motor_to_policy]
-        controller.update_linear_velocity(np.zeros(3))
         target = controller.infer(q, np.zeros(12), [1, 0, 0, 0])
         print(f'Policy: {controller.policy_path}')
-        print(f'Input: [1,48]; output: {target.shape}; finite: {np.isfinite(target).all()}')
+        print(f'Input: [1,45]; output: {target.shape}; finite: {np.isfinite(target).all()}')
         print(f'Policy -> DDS: {controller.policy_to_motor.tolist()}')
-        print('Preprocessing: training-confirmed 48 values, relative joints / physical units; no history or height scan.')
+        print('Preprocessing: 45 values, relative joints / physical units; no linear velocity, history or height scan.')
         print(f'PD: KP={controller.kps[0]}, KD={controller.kds[0]}; control={controller.control_dt}s')
         if args.check_mapping:
             controller.check_mujoco_mapping(args.check_mapping)

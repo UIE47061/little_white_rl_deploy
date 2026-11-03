@@ -4,7 +4,7 @@
 
 | 版本 | 入口 | 模型 | 控制方式 |
 |---|---|---|---|
-| MJLab blind easy v4 | `little_white_mjlab.py` | `pre_train/mjlab/blind_easy_v4/` | 鍵盤、搖桿、終端機 |
+| MJLab Proprio V7 | `little_white_mjlab.py` | `pre_train/mjlab/proprio_v7/` | 鍵盤、搖桿、終端機 |
 | WTW v8 | `little_white_wtw.py` | `pre_train/wtw/wtw_slippery_trot_v8/` | 鍵盤、搖桿、終端機、手機網頁 |
 
 ## 安裝
@@ -34,9 +34,10 @@ python unitree_mujoco.py
 
 ## MJLab 行走
 
-目前使用本機 `blind_easy_v4_seed46/model_2999.pt`，PD 為 **40 / 0.1**，
-控制頻率 50 Hz。單幀 48 維觀測，不使用歷史堆疊或地形高度掃描；
-觀測正規化已包在模型內。舊的 `pre_train/mjlab/omni/` 留存，但不再由預設設定載入。
+目前使用本機 `proprio45_v7_load_balance_seed50/model_2999.pt`，PD 為 **40 / 0.1**，
+控制頻率 50 Hz。單幀 45 維觀測：角速度 3、重力方向 3、相對關節角度 12、
+關節角速度 12、前次 action 12、速度指令 3；不使用機身線速度、歷史堆疊或高度掃描。
+觀測正規化已包在模型內。舊模型留存，但不再由預設設定載入。
 
 程式依原版 `little_white_isaaclab.py` 的單一 `Controller` 架構整理：
 `Init()` 建立 DDS、`LowStateMessageHandler()` 更新狀態、
@@ -59,24 +60,23 @@ python little_white_mjlab.py lo
 python little_white_mjlab.py lo --no-gui
 ```
 
-除了 `rt/lowstate`，此模型需要 `rt/sportmodestate.velocity` 的三軸線速度。
-本機模擬器提供世界座標速度，YAML 設 `linear_velocity_frame: world`，
-推論前用 IMU 四元數轉成機身座標。速度缺失或超過 0.5 秒未更新時不允許進入行走；
-行走途中失效則控制迴圈結束並送出阻尼。實機需提供等價的速度估計，並確認訊息座標系。
+此模型只需要 `rt/lowstate` 的關節角度、關節速度、IMU 四元數與角速度，
+不訂閱 `rt/sportmodestate`，也不需要線速度估計。關節／IMU 狀態過期時切換阻尼。
 
-已檢查匯出前後 actor 輸出一致、MuJoCo 感測器觀測與關節映射；
-此 rough checkpoint 尚未完成步態評估與 sim2sim 行走驗證。
+已檢查匯出前後 actor 輸出一致與 MuJoCo 關節映射。訓練環境的固定命令評估顯示
+相較 V6，V7 後腿接地與承重更平均，後退／側移／左轉改善，但直行速度稍慢。
+平地固定命令的推擾／噪聲測試未跌倒；此版本用於 sim2sim 測試，尚未完成實機驗證。
 
 重新匯出與離線測試：
 
 ```bash
 cd ../mjlab
 uv run --no-sync ../little_white_rl_deploy/export_mjlab_policy.py \
-  --checkpoint logs/rsl_rl/little_white_v3_blind_v4_easy/2026-10-31_14-18-47_blind_easy_v4_seed46/model_2999.pt \
-  --output ../little_white_rl_deploy/pre_train/mjlab/blind_easy_v4
+  --checkpoint logs/rsl_rl/little_white_v3_proprio_v7_easy/2026-11-03_13-59-18_proprio45_v7_load_balance_seed50/model_2999.pt \
+  --output ../little_white_rl_deploy/pre_train/mjlab/proprio_v7
 # 匯出會產生新的 SHA256，需同步填入 little_white_mjlab.yaml。
 cd ../little_white_rl_deploy
-python -m unittest discover -s tests -v
+python little_white_mjlab.py --check-mapping ../csl_mujoco/unitree_robots/little_white_v3/scene.xml
 ```
 
 在終端機輸入 `stand`，等 3 秒後輸入 `move`，再點選鍵盤面板：
@@ -86,8 +86,10 @@ python -m unittest discover -s tests -v
 - Q／E：增減轉向速度。
 - Space／Esc：速度歸零；Esc 不關閉面板。
 
-預設 `incremental` 模式每次增減 0.2，**放開按鍵會保留速度**；失焦或關窗時歸零。
-`little_white_mjlab.yaml` 的 `keyboard_mode: hold` 可改為按住移動、放開歸零。
+MJLab 使用原版 `gui_teleop.py` 的 OpenCV 鍵盤面板，每次增減 0.2，
+**放開按鍵會保留速度**；Space／Esc 歸零。此面板不支援 hold 模式。
+若 shell 為訓練設定了 `QT_QPA_PLATFORM=offscreen`，有 `DISPLAY` 時面板會自動
+改用 OpenCV 附帶的 `xcb`，避免缺少 offscreen 插件造成崩潰。
 速度上限、線速度／角速度步幅也在此 YAML 調整；上限會受模型訓練範圍限制。
 
 終端機支援 `stand`、`sit`、`move`、`stop`、`status`、`exit`，以及 `cmd vx vy yaw`。
@@ -159,7 +161,7 @@ python little_white_wtw.py --check-mapping ../csl_mujoco/unitree_robots/little_w
 little_white_rl_deploy/
 ├── little_white_mjlab.py / .yaml   # MJLab 主程式與設定
 ├── export_mjlab_policy.py          # 訓練環境用的模型匯出工具
-├── mjlab_teleop.py                # MJLab 鍵盤
+├── gui_teleop.py                  # 原版 OpenCV 鍵盤面板，補上命令重置與各軸限速
 ├── headless_teleop.py             # 共用搖桿與裝置檢查
 ├── little_white_wtw.py / .yaml    # WTW 推論與共用 DDS Controller
 ├── wtw_commands.py               # WTW 指令與步態
