@@ -79,7 +79,7 @@ class WTWPolicy:
             if not np.allclose(cfg[key], meta[meta_key], rtol=0, atol=1e-7):
                 raise ValueError(f"{key} differs from the exported model contract")
         digest = hashlib.sha256(self.policy_path.read_bytes()).hexdigest()
-        if digest != meta["policy_sha256"]:
+        if digest != meta["policy_sha256"] or digest != cfg.get("policy_sha256", digest):
             raise ValueError("policy.pt SHA256 does not match metadata.json")
         self.default = joint_vector(cfg["default_angles"], "default_angles")
         self.kp = joint_vector(cfg["kps"], "kps")
@@ -97,6 +97,20 @@ class WTWPolicy:
         self.motor_to_policy = np.argsort(self.policy_to_motor)
         self.commands = np.asarray(cfg["cmd_init"], dtype=np.float32)
         self.command_scale = np.asarray(cfg["cmd_scale"], dtype=np.float32)
+        ranges = meta.get("deployment_velocity_ranges")
+        if ranges is not None:
+            declared = np.asarray([ranges[name] for name in
+                                   ("lin_vel_x", "lin_vel_y", "ang_vel_z")], dtype=float)
+            configured = np.array([[-cfg["max_backward"], cfg["max_lin"]],
+                                   [-cfg["max_lateral"], cfg["max_lateral"]],
+                                   [-cfg["max_ang"], cfg["max_ang"]]], dtype=float)
+            if (declared.shape != (3, 2) or not np.isfinite(declared).all() or
+                    not np.isfinite(configured).all() or
+                    np.any(declared[:, 0] >= 0) or np.any(declared[:, 1] <= 0) or
+                    np.any(configured[:, 0] >= 0) or np.any(configured[:, 1] <= 0) or
+                    np.any(configured[:, 0] < declared[:, 0] - 1e-7) or
+                    np.any(configured[:, 1] > declared[:, 1] + 1e-7)):
+                raise ValueError("Configured velocity limits exceed the evaluated model ranges")
         self.validate_commands(self.commands)
         self.preset = cfg.get("motion_preset")
         self.motion_limits = None
@@ -127,7 +141,8 @@ class WTWPolicy:
             raise ValueError("Invalid swing height, stance dimensions or idle_step (0/1)")
         if commands[14] and self.metadata.get("idle_control", {}).get("version") != 1:
             raise ValueError("This policy does not support idle_step")
-        if self.metadata.get("slippery_command_limits") is not None:
+        if (self.metadata.get("slippery_command_limits") is not None or
+                self.metadata.get("deployment_velocity_ranges") is not None):
             cfg = self.config
             limits = [(-cfg.get("max_backward", .3), cfg["max_lin"]),
                       (-cfg.get("max_lateral", .25), cfg.get("max_lateral", .25)),
@@ -434,10 +449,11 @@ class Controller:
             elif words == ["status"]:
                 print(f"mode={self.mode}, running={self.running}, error={self.error}")
                 print(dict(zip(self.runtime.metadata["command_names"], self.runtime.commands.tolist())))
-                print(f"idle_step={int(self.runtime.commands[14])} (0=stand, 1=step at zero velocity)")
+                if self.config["idle_control_enabled"]:
+                    print(f"idle_step={int(self.runtime.commands[14])} (0=stand, 1=step at zero velocity)")
                 print(f"preset={self.runtime.preset}; effective vx/vy/yaw={self.runtime.effective_commands[:3].tolist()}")
             else:
-                raise ValueError("Use stand/sit/move/stop, preset trot/slippery_trot, gait <name>, cmd <name> <value>, ctl idle_step <0|1>, status or exit")
+                raise ValueError("Use stand/sit/move/stop, gait <name>, cmd <name> <value>, status or exit; presets and idle_step require model support")
 
     def ShutDown(self):
         self.running = False
@@ -476,6 +492,7 @@ def main():
         print(f"Policy: {runtime.policy_path}")
         print(f"Input: (1, {runtime.history.size}); output: {target.shape}; finite: {np.isfinite(target).all()}")
         print(f"DDS motor order: {runtime.config['motor_leg_order']}")
+        print(f"PD: KP={runtime.kp[0]:g}, KD={runtime.kd[0]:g}; control={runtime.control_dt}s")
         print(f"Preset: {runtime.preset}; command limits: {runtime.motion_limits}")
         if args.check_mapping:
             runtime.check_mujoco_mapping(args.check_mapping)
@@ -509,7 +526,11 @@ def main():
         if args.gamepad:
             print('Gamepad: left stick=forward/lateral, right stick=yaw; button 0=zero velocity. '
                   'Center sticks after stand/move. Console stop=damping.')
-        print("Commands: stand, move, sit, stop, preset trot/slippery_trot, gait <name>, cmd <name> <value>, ctl idle_step <0|1>, status, exit")
+        print("Commands: stand, move, sit, stop, gait <name>, cmd <name> <value>, status, exit")
+        if runtime.metadata.get("operator_presets"):
+            print("Presets: " + ", ".join(runtime.metadata["operator_presets"]))
+        if runtime.config["idle_control_enabled"]:
+            print("Idle control: ctl idle_step <0|1>")
         while controller.running:
             text = input("CMD: ").strip()
             if text == "exit":

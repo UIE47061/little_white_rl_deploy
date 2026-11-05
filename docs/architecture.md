@@ -14,6 +14,10 @@ flowchart LR
 
 `wtw_commands.py` 是指令名稱、步態及參數範圍的共用來源。`wtw_teleop.py` 以獨立 pygame 程序提供鍵盤面板。網頁模式不啟動鍵盤面板，不使用終端機輸入迴圈。
 
+WTW 預設載入 2026-11-05 精度修正第 1,500 輪模型（40/0.1），70 維 × 30 幀、50 Hz 推論。
+零速度仍執行 policy 並持續原地踏步，不切換固定站姿。
+WTW 統一使用 `little_white_wtw.yaml`；MJLab 入口仍獨立載入 Proprio V7。
+
 ## 網頁與控制器
 
 `web/server.py` 僅處理 HTTP、WebSocket、JSON 與靜態資源，不持有 DDS 發送端或 policy。`web/bridge.py` 在父程序接收有界佇列中的指令，建立最新狀態快照；慢速觀看端不累積完整狀態串流。

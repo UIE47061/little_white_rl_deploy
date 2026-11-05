@@ -1,0 +1,1284 @@
+{
+  "checkpoint_sha256": "17b7e82a93444334309430568b0338df9f7c71e911a5c3d0e3fdfa29d1f443ef",
+  "export_policy_sha256": "594f9474c9797935b1e613722c72f4bffc38bf83384b06d6105b033eee5c8433",
+  "date": "2026-11-05",
+  "num_seeds": 20,
+  "episode_seconds": 20,
+  "suites": {
+    "mjlab/body_stability": {
+      "passed": true,
+      "summary": {
+        "trot_vx_0.00": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.058707017100021616,
+          "yaw_rmse": 0.07586124038248719,
+          "contact_agreement": 0.8612652608213095,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.006320658602881231,
+          "pitch_rmse": 0.024239670163590625,
+          "roll_rmse": 0.004771638314508027,
+          "width_rmse": 0.020472343593235506,
+          "length_rmse": 0.022140623549837913,
+          "height_mean": 0.251516686558525,
+          "pitch_mean": -0.023965693760423463,
+          "roll_mean": -0.0031297518773289222,
+          "width_mean": 0.3094601590562608,
+          "length_mean": 0.33535740734568975,
+          "height_span": 0.004726001620292663,
+          "pitch_span": 0.010616202000528574,
+          "roll_span": 0.008358573011355475,
+          "width_span": 0.036898155510425565,
+          "length_span": 0.022453050315380096,
+          "roll_rate_rms": 0.07595311106084793,
+          "pitch_rate_rms": 0.0906552924471173,
+          "vertical_velocity_rms": 0.050282595180477174,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.637547588348388,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.005952687800821492,
+            0.0041867191788255015
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7981030807823158,
+            0.9996501786970289
+          ],
+          "foot_swing_peaks": [
+            0.05114846313993134,
+            0.06083857734772291,
+            0.055728053251902256,
+            0.06008764037354425
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "trot_vx_0.15": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.03777226908643866,
+          "yaw_rmse": 0.08668561568840151,
+          "contact_agreement": 0.8490566037735849,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.006280761188890008,
+          "pitch_rmse": 0.02514449592010634,
+          "roll_rmse": 0.01128450101573089,
+          "width_rmse": 0.01925482597780099,
+          "length_rmse": 0.028500122827927816,
+          "height_mean": 0.2515420319361573,
+          "pitch_mean": -0.025022934064719737,
+          "roll_mean": -0.01101360315835304,
+          "width_mean": 0.3081593862252018,
+          "length_mean": 0.32886115850738096,
+          "height_span": 0.005035202205181122,
+          "pitch_span": 0.008000569511204958,
+          "roll_span": 0.007840345264412463,
+          "width_span": 0.035501043498516086,
+          "length_span": 0.02256479412317276,
+          "roll_rate_rms": 0.058428748006590536,
+          "pitch_rate_rms": 0.10310791781874074,
+          "vertical_velocity_rms": 0.04787312774782455,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.897685623168945,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.005871961305809497,
+            0.004595141045690508
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7984414759193487,
+            0.999768201103505
+          ],
+          "foot_swing_peaks": [
+            0.050557377371523105,
+            0.0677002170140093,
+            0.054247073034445425,
+            0.055919403305107876
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "trot_vx_0.30": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.035456656316145134,
+          "yaw_rmse": 0.10875577423145974,
+          "contact_agreement": 0.8493063263041067,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.007106005889789174,
+          "pitch_rmse": 0.03295993140367119,
+          "roll_rmse": 0.005645769734000923,
+          "width_rmse": 0.018887858133082254,
+          "length_rmse": 0.03254471438771571,
+          "height_mean": 0.2507098707429378,
+          "pitch_mean": -0.03278803415079658,
+          "roll_mean": -0.005041603414399241,
+          "width_mean": 0.30803341042254534,
+          "length_mean": 0.32471288464111703,
+          "height_span": 0.005349936336278916,
+          "pitch_span": 0.009852306637912988,
+          "roll_span": 0.008329889125889167,
+          "width_span": 0.03302231580018997,
+          "length_span": 0.02041117399930954,
+          "roll_rate_rms": 0.06176205789443551,
+          "pitch_rate_rms": 0.10426152676095948,
+          "vertical_velocity_rms": 0.04489838279358599,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.987662076950073,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.006566690642082483,
+            0.005222040968707549
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7990073677734497,
+            1.0000640522139164
+          ],
+          "foot_swing_peaks": [
+            0.0476342386752367,
+            0.06931019756604324,
+            0.050865370763672715,
+            0.05623675722967495
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        }
+      }
+    },
+    "mjlab/gaits": {
+      "passed": true,
+      "summary": {
+        "trot": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.03545667222283376,
+          "yaw_rmse": 0.1087558118487157,
+          "contact_agreement": 0.8493063263041067,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.007106006194496646,
+          "pitch_rmse": 0.032959928569208034,
+          "roll_rmse": 0.005645756381462143,
+          "width_rmse": 0.01888786049308356,
+          "length_rmse": 0.032544713657210865,
+          "height_mean": 0.2507098704799761,
+          "pitch_mean": -0.03278803163126408,
+          "roll_mean": -0.005041584044973147,
+          "width_mean": 0.30803341286858493,
+          "length_mean": 0.32471288507938645,
+          "height_span": 0.005349937826395035,
+          "pitch_span": 0.009852252341806889,
+          "roll_span": 0.008329885656712577,
+          "width_span": 0.033022317290306094,
+          "length_span": 0.020411208271980286,
+          "roll_rate_rms": 0.06176209849063041,
+          "pitch_rate_rms": 0.10426150888781675,
+          "vertical_velocity_rms": 0.044898391592553995,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.9876633644104,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.006566696511918775,
+            0.005222040818618027
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7990073621660817,
+            1.0000640504929703
+          ],
+          "foot_swing_peaks": [
+            0.04763424327803982,
+            0.06931019218130544,
+            0.05086536745230356,
+            0.056236753030256784
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "pace": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.19419406398379946,
+          "yaw_rmse": 0.11823892886174361,
+          "contact_agreement": 0.8735849056603774,
+          "frequency_error": 0.005271920088790271,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.006381723370696754,
+          "pitch_rmse": 0.021948343560153773,
+          "roll_rmse": 0.10168281943022577,
+          "width_rmse": 0.018798313612070936,
+          "length_rmse": 0.03611336700975222,
+          "height_mean": 0.25396079933157106,
+          "pitch_mean": -0.015118668614221845,
+          "roll_mean": 0.005788536605396237,
+          "width_mean": 0.28871095907542604,
+          "length_mean": 0.3210287444185999,
+          "height_span": 0.01563068777322769,
+          "pitch_span": 0.04902170742861926,
+          "roll_span": 0.2850248172879219,
+          "width_span": 0.06271891593933106,
+          "length_span": 0.02014397382736206,
+          "roll_rate_rms": 1.9381566679057134,
+          "pitch_rate_rms": 0.30871478397093005,
+          "vertical_velocity_rms": 0.10480532184580094,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.160262441635131,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.011471824521731715,
+            0.010431977681141725
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.499999999999999,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.499999999999999,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7979436670321212,
+            0.9990429408123603
+          ],
+          "foot_swing_peaks": [
+            0.05001292464633782,
+            0.06322875620797276,
+            0.07109666208651934,
+            0.0589668967657619
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "bound": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.15390107618690668,
+          "yaw_rmse": 0.23738999431760544,
+          "contact_agreement": 0.8793562708102108,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.00756209465691593,
+          "pitch_rmse": 0.13443593592953956,
+          "roll_rmse": 0.031012329317021352,
+          "width_rmse": 0.028233902920067677,
+          "length_rmse": 0.05823119927921613,
+          "height_mean": 0.25231461830676993,
+          "pitch_mean": -0.05154856364524606,
+          "roll_mean": 0.004200569924555531,
+          "width_mean": 0.3180066853960135,
+          "length_mean": 0.3074911099948511,
+          "height_span": 0.016296304017305373,
+          "pitch_span": 0.34231818206608294,
+          "roll_span": 0.08630986604839563,
+          "width_span": 0.04104307591915131,
+          "length_span": 0.09821713864803314,
+          "roll_rate_rms": 0.6326289909676601,
+          "pitch_rate_rms": 2.0149960085113134,
+          "vertical_velocity_rms": 0.09490223321827676,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 10.856068897247315,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.012389509488019392,
+            0.009374694700278647
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.502774694783573,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.8000088823351185,
+            0.9990937821385879
+          ],
+          "foot_swing_peaks": [
+            0.03710627104748379,
+            0.0691647245226936,
+            0.06152555088202157,
+            0.04480217307806014
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "pronk": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.12499427225495037,
+          "yaw_rmse": 0.0795006028454843,
+          "contact_agreement": 0.8475027746947837,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.02630283250548777,
+          "pitch_rmse": 0.060216897249342614,
+          "roll_rmse": 0.01919897161168229,
+          "width_rmse": 0.025812911562097612,
+          "length_rmse": 0.02503341341545326,
+          "height_mean": 0.25034793638412356,
+          "pitch_mean": -0.0259239156650171,
+          "roll_mean": 0.0025397052912759415,
+          "width_mean": 0.31608539030501637,
+          "length_mean": 0.33231271922290656,
+          "height_span": 0.07116912975907326,
+          "pitch_span": 0.15438174307346345,
+          "roll_span": 0.057045972999185325,
+          "width_span": 0.04395773708820343,
+          "length_span": 0.021519795060157776,
+          "roll_rate_rms": 0.3655525662516229,
+          "pitch_rate_rms": 1.045231661614241,
+          "vertical_velocity_rms": 0.4291504827727568,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 11.850890636444092,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.013305434897105164,
+            0.011779585064075102
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.6193118756936746,
+            2.4972253052164257,
+            3.973362930077691
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.8017145043038418,
+            1.0005449267231759
+          ],
+          "foot_swing_peaks": [
+            0.04252417512238024,
+            0.06462855861418777,
+            0.038097392486201385,
+            0.04875338160329394
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        }
+      }
+    },
+    "mjlab/tracking": {
+      "passed": true,
+      "summary": {
+        "stand": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.058707011303756565,
+          "yaw_rmse": 0.0758612384373625,
+          "contact_agreement": 0.8612652608213095,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.006320659141359144,
+          "pitch_rmse": 0.024239672110907433,
+          "roll_rmse": 0.004771621047297503,
+          "width_rmse": 0.02047234608303645,
+          "length_rmse": 0.022140623985219036,
+          "height_mean": 0.25151668579362074,
+          "pitch_mean": -0.02396569625029008,
+          "roll_mean": -0.0031297537810271074,
+          "width_mean": 0.30946016142126187,
+          "length_mean": 0.3353574067684971,
+          "height_span": 0.00472598746418953,
+          "pitch_span": 0.01061619697138667,
+          "roll_span": 0.00835870067239739,
+          "width_span": 0.036898158490657806,
+          "length_span": 0.02245304882526398,
+          "roll_rate_rms": 0.07595305101674664,
+          "pitch_rate_rms": 0.0906552327053061,
+          "vertical_velocity_rms": 0.05028258058267008,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.637548351287842,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.005952685252000622,
+            0.004186719777080983
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7981030814569459,
+            0.9996501779095952
+          ],
+          "foot_swing_peaks": [
+            0.05114846298264132,
+            0.060838581581007356,
+            0.0557280526558558,
+            0.06008763901889323
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "forward": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.035460273829816105,
+          "yaw_rmse": 0.10878395627952615,
+          "contact_agreement": 0.849278579356271,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.007106306603899758,
+          "pitch_rmse": 0.03296259262197422,
+          "roll_rmse": 0.005653474803934485,
+          "width_rmse": 0.01888910818888415,
+          "length_rmse": 0.03254317251830223,
+          "height_mean": 0.2507095679558077,
+          "pitch_mean": -0.0327912142441363,
+          "roll_mean": -0.005050546951570262,
+          "width_mean": 0.30803498459874457,
+          "length_mean": 0.32471435898615175,
+          "height_span": 0.005350466817617416,
+          "pitch_span": 0.009834477212280035,
+          "roll_span": 0.008315638161730022,
+          "width_span": 0.033024589717388156,
+          "length_span": 0.020394496619701385,
+          "roll_rate_rms": 0.061760145372207906,
+          "pitch_rate_rms": 0.10426148918292669,
+          "vertical_velocity_rms": 0.04489327298207343,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.987661743164063,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.006566788481396432,
+            0.005222441076410741
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7990074595141242,
+            1.0000641738968765
+          ],
+          "foot_swing_peaks": [
+            0.04763033461239601,
+            0.06931183141910216,
+            0.050869048270914284,
+            0.05623632570559328
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "backward": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.07674850504210044,
+          "yaw_rmse": 0.08267173941456893,
+          "contact_agreement": 0.8712541620421753,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.006997296136210615,
+          "pitch_rmse": 0.009533216342569085,
+          "roll_rmse": 0.004393148179732318,
+          "width_rmse": 0.021426247827579976,
+          "length_rmse": 0.015040511079835336,
+          "height_mean": 0.25093660747072144,
+          "pitch_mean": -0.00909103933780182,
+          "roll_mean": -0.003323090782795852,
+          "width_mean": 0.310357037841546,
+          "length_mean": 0.34338695435194544,
+          "height_span": 0.006224489957094193,
+          "pitch_span": 0.009291892522014678,
+          "roll_span": 0.00793798357481137,
+          "width_span": 0.03906064033508301,
+          "length_span": 0.022565363347530364,
+          "roll_rate_rms": 0.0775633732202859,
+          "pitch_rate_rms": 0.08911640468854899,
+          "vertical_velocity_rms": 0.05658563638771824,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.658101224899292,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.006510230833690345,
+            0.006446967350662257
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.798810326049707,
+            0.9993337802476653
+          ],
+          "foot_swing_peaks": [
+            0.05018228059013684,
+            0.05386272369291294,
+            0.05764963855346043,
+            0.05858820699832655
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "left": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.09924836229881523,
+          "yaw_rmse": 0.10067848890341824,
+          "contact_agreement": 0.8615427302996672,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.006161187869484938,
+          "pitch_rmse": 0.01572223098274198,
+          "roll_rmse": 0.01270717734676576,
+          "width_rmse": 0.023262879007210115,
+          "length_rmse": 0.020128078939371092,
+          "height_mean": 0.2517117083337278,
+          "pitch_mean": -0.015114696582233519,
+          "roll_mean": -0.011966338993030002,
+          "width_mean": 0.31287477122295176,
+          "length_mean": 0.3369980750103108,
+          "height_span": 0.005273632705211639,
+          "pitch_span": 0.015050659980624914,
+          "roll_span": 0.013829944166354835,
+          "width_span": 0.03616262078285217,
+          "length_span": 0.016976433992385864,
+          "roll_rate_rms": 0.08942882582445288,
+          "pitch_rate_rms": 0.09289011565461516,
+          "vertical_velocity_rms": 0.04882000108237012,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.869793939590455,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.004588691795722031,
+            0.004775496615716948
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.799267663050197,
+            0.9997291898022109
+          ],
+          "foot_swing_peaks": [
+            0.046801871235171946,
+            0.06595536751672625,
+            0.057276285390059134,
+            0.058688049756667825
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "right": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.1501732525685031,
+          "yaw_rmse": 0.10682405253892846,
+          "contact_agreement": 0.8490566037735849,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.006765296976390349,
+          "pitch_rmse": 0.029407091658689592,
+          "roll_rmse": 0.005400632048977619,
+          "width_rmse": 0.018216515412843044,
+          "length_rmse": 0.025353731343516307,
+          "height_mean": 0.2510768924292992,
+          "pitch_mean": -0.029216730127526607,
+          "roll_mean": -0.004981889339219716,
+          "width_mean": 0.3064696581693125,
+          "length_mean": 0.3326721592431063,
+          "height_span": 0.00520680770277977,
+          "pitch_span": 0.01196689074859023,
+          "roll_span": 0.004892892634961754,
+          "width_span": 0.03753703087568283,
+          "length_span": 0.028005987405776978,
+          "roll_rate_rms": 0.05330837690910874,
+          "pitch_rate_rms": 0.10219409165246551,
+          "vertical_velocity_rms": 0.050630716449435766,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.523046350479126,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.011626723150862701,
+            0.0059095755235518835
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7962327030986718,
+            0.9995008597993028
+          ],
+          "foot_swing_peaks": [
+            0.05220523415340317,
+            0.05835817426781761,
+            0.055687085919909986,
+            0.056235960017551066
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "yaw_left": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.07192457664820896,
+          "yaw_rmse": 0.14759223711791625,
+          "contact_agreement": 0.852219755826859,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.006133712630323458,
+          "pitch_rmse": 0.026114960507086303,
+          "roll_rmse": 0.004899621742928897,
+          "width_rmse": 0.02232018860815297,
+          "length_rmse": 0.01852633712052846,
+          "height_mean": 0.2518616763355994,
+          "pitch_mean": -0.025888439381834154,
+          "roll_mean": 0.002718692030519279,
+          "width_mean": 0.31087322172261234,
+          "length_mean": 0.33923362399411117,
+          "height_span": 0.006362296640872955,
+          "pitch_span": 0.010789555311203004,
+          "roll_span": 0.011034065985586494,
+          "width_span": 0.041978366672992706,
+          "length_span": 0.020718936622142792,
+          "roll_rate_rms": 0.12076991255766407,
+          "pitch_rate_rms": 0.10968706968906909,
+          "vertical_velocity_rms": 0.06296040121750614,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.723394632339478,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.00431282972093782,
+            0.00649335437112056
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.8004559682253708,
+            0.9999365453081399
+          ],
+          "foot_swing_peaks": [
+            0.05181254785093996,
+            0.059607005214149286,
+            0.05951989223559697,
+            0.057522828260605986
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "yaw_right": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.05726913761030372,
+          "yaw_rmse": 0.22008094447739496,
+          "contact_agreement": 0.8609877913429523,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.006736969868988718,
+          "pitch_rmse": 0.020254856516635077,
+          "roll_rmse": 0.012285864841570193,
+          "width_rmse": 0.020415150491672772,
+          "length_rmse": 0.02719158326907331,
+          "height_mean": 0.25116877402700943,
+          "pitch_mean": -0.02003084514057522,
+          "roll_mean": -0.012064274501667402,
+          "width_mean": 0.3077635893364593,
+          "length_mean": 0.33144172036422875,
+          "height_span": 0.006174651533365249,
+          "pitch_span": 0.0085615542717278,
+          "roll_span": 0.0056940915528684855,
+          "width_span": 0.04555450528860092,
+          "length_span": 0.03324937671422958,
+          "roll_rate_rms": 0.0634434863737404,
+          "pitch_rate_rms": 0.08510231904296803,
+          "vertical_velocity_rms": 0.04621050624861022,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.538793659210205,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.010743021744320813,
+            0.006135832412709002
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7960643567277128,
+            0.9992220889040775
+          ],
+          "foot_swing_peaks": [
+            0.04866263842417134,
+            0.06297333512455225,
+            0.05336113774114185,
+            0.059207610034129846
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        }
+      }
+    },
+    "mjlab/switches": {
+      "passed": true,
+      "summary": {
+        "trot_pace_bound_pronk": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.18551510231076618,
+          "yaw_rmse": 0.20150567870835778,
+          "contact_agreement": 0.8346559378468369,
+          "frequency_error": 0.06936736958934527,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.014798511372174975,
+          "pitch_rmse": 0.07751185660162077,
+          "roll_rmse": 0.058659824639405375,
+          "width_rmse": 0.023205868939685605,
+          "length_rmse": 0.03859273108688365,
+          "height_mean": 0.2514243876083974,
+          "pitch_mean": -0.022484030076131527,
+          "roll_mean": -0.004552360957155516,
+          "width_mean": 0.30757323213409504,
+          "length_mean": 0.3220436531467391,
+          "height_span": 0.05470758229494095,
+          "pitch_span": 0.279723871871829,
+          "roll_span": 0.22034084647893906,
+          "width_span": 0.05721856653690338,
+          "length_span": 0.052525772154331206,
+          "roll_rate_rms": 1.0612215494831134,
+          "pitch_rate_rms": 1.17902622808724,
+          "vertical_velocity_rms": 0.23202497415063003,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 12.493856716156007,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.015598472949247641,
+            0.014251143792129684
+          ],
+          "foot_frequency_hz": [
+            2.5554938956714754,
+            2.4972253052164257,
+            2.547169811320754,
+            2.5249722530521637
+          ],
+          "raw_onset_frequency_hz": [
+            2.5776914539400666,
+            2.6026637069922307,
+            2.6442841287458387,
+            2.9578246392896785
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7989354998357935,
+            0.9996160364909942
+          ],
+          "foot_swing_peaks": [
+            0.04072397783965519,
+            0.06361254683799214,
+            0.05048552253029561,
+            0.048236621618270865
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        }
+      }
+    },
+    "mujoco/body_stability": {
+      "passed": true,
+      "summary": {
+        "trot_vx_0.00": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.058824207120255254,
+          "yaw_rmse": 0.07593165787024082,
+          "contact_agreement": 0.8618201997780244,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.005357190519132366,
+          "pitch_rmse": 0.024229060231346695,
+          "roll_rmse": 0.004588878035016839,
+          "width_rmse": 0.020477657660315885,
+          "length_rmse": 0.022145635292505843,
+          "height_mean": 0.25251512380693547,
+          "pitch_mean": -0.023949573849308108,
+          "roll_mean": -0.0030073843788711047,
+          "width_mean": 0.30946773332154376,
+          "length_mean": 0.3353496112678564,
+          "height_span": 0.004730543192389114,
+          "pitch_span": 0.010624255867308613,
+          "roll_span": 0.008275867470815738,
+          "width_span": 0.036920754615561116,
+          "length_span": 0.02246523763547507,
+          "roll_rate_rms": 0.07593751655935302,
+          "pitch_rate_rms": 0.0905909851315756,
+          "vertical_velocity_rms": 0.05029494046838775,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.527493690118842,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.005964462441888336,
+            0.0041800004029375875
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7980952250951443,
+            0.9996510190597958
+          ],
+          "foot_swing_peaks": [
+            0.052161914231660333,
+            0.06182619782319121,
+            0.05670351028933479,
+            0.061110222118252566
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "trot_vx_0.15": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.03819555433624581,
+          "yaw_rmse": 0.08668141959014863,
+          "contact_agreement": 0.8615427302996672,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.00531351556148484,
+          "pitch_rmse": 0.025130780022505284,
+          "roll_rmse": 0.011240974843305409,
+          "width_rmse": 0.01925757476165215,
+          "length_rmse": 0.02850138149260311,
+          "height_mean": 0.2525411850361011,
+          "pitch_mean": -0.02501045100395472,
+          "roll_mean": -0.01096846462977499,
+          "width_mean": 0.3081631246138482,
+          "length_mean": 0.3288589743272771,
+          "height_span": 0.005032740536061664,
+          "pitch_span": 0.007952105931509959,
+          "roll_span": 0.007822425908013774,
+          "width_span": 0.03547976219718182,
+          "length_span": 0.022559814641591756,
+          "roll_rate_rms": 0.058280711715818986,
+          "pitch_rate_rms": 0.10285695890382567,
+          "vertical_velocity_rms": 0.04784720273696451,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.641108012253094,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.005877615163488967,
+            0.004597689250383704
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7984383320338927,
+            0.999768172794326
+          ],
+          "foot_swing_peaks": [
+            0.05156118549724866,
+            0.06869869526831773,
+            0.055245828153130394,
+            0.05692842883673793
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        },
+        "trot_vx_0.30": {
+          "survival_rate": 1.0,
+          "velocity_rmse": 0.03598521528505275,
+          "yaw_rmse": 0.10871090257412352,
+          "contact_agreement": 0.8668978912319645,
+          "frequency_error": 0.002774694783573839,
+          "target_frequency_hz": 2.5,
+          "commanded_swing_height": 0.05999999865889549,
+          "switch_failure_rate": 0.0,
+          "height_rmse": 0.006133516876456416,
+          "pitch_rmse": 0.03293951993512585,
+          "roll_rmse": 0.005508133251695699,
+          "width_rmse": 0.01889120000795222,
+          "length_rmse": 0.0325593013691322,
+          "height_mean": 0.25170823393346736,
+          "pitch_mean": -0.03277717585943724,
+          "roll_mean": -0.004913824766360547,
+          "width_mean": 0.3080404140786408,
+          "length_mean": 0.32469652906733304,
+          "height_span": 0.005334149132049525,
+          "pitch_span": 0.009525257010461493,
+          "roll_span": 0.008098935279787873,
+          "width_span": 0.03301883654723739,
+          "length_span": 0.020287918489212603,
+          "roll_rate_rms": 0.061552114185660145,
+          "pitch_rate_rms": 0.10396687732297767,
+          "vertical_velocity_rms": 0.04487167233715052,
+          "height_switch_failure_rate": null,
+          "torque_peak_nm": 9.954775947719282,
+          "action_clip_fraction": 0.0,
+          "torque_clip_fraction": 0.0,
+          "adaptation_rmse": [
+            0.006569732219707884,
+            0.005230323706638307
+          ],
+          "foot_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "raw_onset_frequency_hz": [
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257,
+            2.4972253052164257
+          ],
+          "adaptation_true": [
+            0.8000000000000002,
+            1.0
+          ],
+          "adaptation_estimated": [
+            0.7990056462611199,
+            1.0000632466640031
+          ],
+          "foot_swing_peaks": [
+            0.04865611323485612,
+            0.07028222632440523,
+            0.0518395689185165,
+            0.05726003383772717
+          ],
+          "tracking_thresholds_met": true,
+          "phase_thresholds_met": true,
+          "thresholds_met": true,
+          "passed": true,
+          "result_kind": "acceptance"
+        }
+      }
+    }
+  },
+  "dds_zero_speed_25s": {
+    "mujoco": "3.8.0",
+    "domain": 77,
+    "viewer_stall": 0,
+    "wall_duration_s": 25.08389455001452,
+    "sim_duration_s": 24.29999999999888,
+    "real_time_factor": 0.9687490892431939,
+    "height_span_m": 0.008689614445765242,
+    "height_min_m": 0.24670905397985313,
+    "height_max_m": 0.25539866842561837,
+    "pitch_span_deg": 1.6075534297759069,
+    "roll_span_deg": 2.0828108521909408,
+    "angular_rate_rms": 0.15357630982411322,
+    "vertical_velocity_rms": 0.06270445359275993,
+    "peak_torque_nm": 9.024119521986739,
+    "inference_calls": 1252,
+    "wall_inference_period_median_s": 0.01999737400910817,
+    "sim_inference_period_median_s": 0.01999999999999602,
+    "inference_ms_p95": 2.153157346765511
+  },
+  "dds_transition": {
+    "mujoco": "3.8.0",
+    "domain": 78,
+    "viewer_stall": 0,
+    "wall_duration_s": 16.04320124699734,
+    "sim_duration_s": 15.705000000000528,
+    "real_time_factor": 0.9789193414836636,
+    "height_span_m": 0.008452483021625934,
+    "height_min_m": 0.24690298899929292,
+    "height_max_m": 0.25535547202091885,
+    "pitch_span_deg": 2.3749070936977095,
+    "roll_span_deg": 2.5687899373751755,
+    "angular_rate_rms": 0.15646668264036084,
+    "vertical_velocity_rms": 0.06297788812600848,
+    "peak_torque_nm": 8.951732627922897,
+    "inference_calls": 803,
+    "wall_inference_period_median_s": 0.02000027449685149,
+    "sim_inference_period_median_s": 0.019999999999999574,
+    "inference_ms_p95": 1.1578119825571775,
+    "return_zero_height_span_m": 0.007896839981892001,
+    "return_zero_roll_span_deg": 1.6145691079406743,
+    "forward_samples": 786,
+    "no_fall": true
+  }
+}

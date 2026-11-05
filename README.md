@@ -5,7 +5,7 @@
 | 版本 | 入口 | 模型 | 控制方式 |
 |---|---|---|---|
 | MJLab Proprio V7 | `little_white_mjlab.py` | `pre_train/mjlab/proprio_v7/` | 鍵盤、搖桿、終端機 |
-| WTW v8 | `little_white_wtw.py` | `pre_train/wtw/wtw_slippery_trot_v8/` | 鍵盤、搖桿、終端機、手機網頁 |
+| WTW 40/0.1 精度修正 1500 | `little_white_wtw.py` | `pre_train/wtw/wtw_kp40_precision_20261105_1500/` | 鍵盤、搖桿、終端機、手機網頁 |
 
 ## 安裝
 
@@ -110,14 +110,27 @@ python little_white_wtw.py lo --web
 ```
 
 WTW 鍵盤為按住 W/S、A/D、Q/E 移動，放開歸零；終端機先 `stand`，等待轉換完成，再 `move`。
-終端機另支援 `preset slippery_trot`、`preset trot`、`gait trot`、`cmd frequency 2.8`、`status`、`stop`、`exit`。
-兩個 preset 都使用目前載入的 v8 模型，改變步態參數。
+目前預設為 **2026-11-05 WTW 精度修正第 1,500 輪模型，Kp=40、Kd=0.1**，輸入為 70 維 × 30 幀。
+預設 trot：2.5 Hz、支撐相比例 0.5、抬腳高度 0.06 m；保持 200 Hz 發送與 50 Hz 推論。
+**零速度持續真正原地踏步**，保留歷史與相位，不使用固定站姿替代。
+速度上限：前進 0.3、後退 0.2、側移 ±0.15 m/s、轉向 ±0.5 rad/s。
+
+終端機可用 `gait trot`／`gait pace`／`gait bound`／`gait pronk`；
+`cmd vx 0.2` 前進、`cmd vx 0` 回到原地踏步，也支援 `cmd vy 0.1`、`cmd yaw_rate 0.2`。
+`cmd frequency 2.8` 調整步頻，`status` 查看命令，`stop` 立即切阻尼。
+這顆模型不支援 slippery presets 或 idle_step 切換。
 
 網頁開啟 `http://127.0.0.1:8080`；手機使用同一區域網路上的 `http://電腦IP:8080`。
 操作順序為 **取得控制 → Stand → 等待完成 → Move**。
 網頁控制台目前使用 WTW 入口，詳見 [網頁說明](web/README.md)。
 
-WTW v8 已通過部分模擬直行／停止測試，部分左轉仍未通過整體驗收；模型評估紀錄保存在對應模型目錄。
+目前載入精度修正訓練的最佳第 1,500 輪，20 個情境各 4 seeds × 20 秒，18/20 通過嚴格診斷，全部存活。
+訓練端零速最大漂移約 3.3 cm；右側移指令 −0.15 m/s，實際約 −0.143 m/s；左右轉指令 ±0.5 rad/s，實際約 +0.454／−0.441 rad/s。
+小幅轉向 ±0.25 rad/s 仍未達精度門檻。這是診斷結果，尚未完成 20 seeds 正式驗收與完整 DDS 動態驗證。
+本輪集中訓練預設 2.5 Hz trot；其他步態、頻率、高度與姿態指令尚未重新驗證。
+完整結果見模型目錄 `precision_evaluation.json`。
+
+`little_white_mjlab.py` 與預設 YAML 已還原，維持原本 Proprio V7。
 
 ## 搖桿控制（MJLab／WTW 共用）
 
@@ -167,7 +180,7 @@ little_white_rl_deploy/
 ├── wtw_commands.py               # WTW 指令與步態
 ├── wtw_motion.py                 # WTW 速度限制
 ├── wtw_teleop.py                  # WTW 鍵盤
-├── pre_train/                    # 目前使用的兩顆 policy、metadata、模型說明
+├── pre_train/                    # 目前與留存的 policy、metadata、模型說明
 ├── requirements/                 # base／keyboard／web 依賴
 ├── web/                          # WTW 網頁後端、前端原始碼與離線建置結果
 └── docs/                         # 安裝、架構、原版對照
@@ -179,7 +192,7 @@ MJLab 與 WTW 各自使用獨立 Controller；鍵盤與搖桿工具仍分檔保�
 
 ## Git
 
-提交程式、YAML、兩顆 policy／metadata、網頁原始碼／建置結果與第三方授權。
+提交程式、YAML、使用中的 policy／metadata、網頁原始碼／建置結果與第三方授權。
 測試、舊權重、備份、node_modules 和執行快取不在目前部署內容中。
 
 ```bash

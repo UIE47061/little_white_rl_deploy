@@ -1,26 +1,21 @@
 # 部署模型
 
-目前只保留兩個入口實際使用的模型。每顆模型的 `policy.pt` 與 `metadata.json` 需成對保存。
+`policy.pt` 與 `metadata.json` 必須成對保存；不同觀測格式不能只替換 PT。
 
-| 模型目錄 | 入口 | 輸入 | 狀態 |
+| 模型目錄 | 入口 | 輸入 | PD |
 |---|---|---|---|
-| `mjlab/omni` | `little_white_mjlab.py` | `[batch,20,45]` | 短程 MuJoCo＋DDS 通路通過；訓練前處理仍待完整設定確認 |
-| `wtw/wtw_slippery_trot_v8` | `little_white_wtw.py` | WTW 70 維 × 30 幀 | 滑地候選 seed88/update2000；部分左轉未通過整體驗收 |
+| `mjlab/proprio_v7` | `little_white_mjlab.py` 預設 | 單幀 45 維 | 40 / 0.1 |
+| `wtw/wtw_kp40_precision_20261105_1500` | `little_white_wtw.py` 預設 | 70 維 × 30 幀 | 40 / 0.1 |
 
-MJLab 的 normalization 已內含；WTW 使用自身觀測格式。不能只替換 PT 而沿用另一版本的觀測或控制設定。
-WTW v8 的 `acceptance.json` 與 `comparison.md` 保留來源評估結果；不是實機驗收證明。
-來源 metadata 可能記錄原訓練電腦的絕對路徑，runtime 實際載入路徑由 YAML 指定。
+WTW 預設為精度修正訓練的第 1,500 輪，Kp=40/Kd=0.1；預設 2.5 Hz trot 持續踏步。
+20 情境各 4 seeds × 20 秒，18/20 通過嚴格診斷，全部存活；±0.25 rad/s 小幅轉向精度仍不足。
+這不是完整 20 seeds 驗收，尚待完整 DDS 動態驗證。結果見模型目錄 `precision_evaluation.json`。
+其他步態、頻率、高度與姿態指令尚未重新驗證。
 
-## 檔案驗證
-
-```text
-808ac4a3fc1c5d0c24a2c7b7f40864c545ce0d7e7939b3857cb6e64383bf7284  mjlab/omni/policy.pt
-2451b3405e79a7255f5996504973fb9194a7495e242528766dfa97bd404fbc59  wtw/wtw_slippery_trot_v8/policy.pt
-```
+舊模型保留。WTW v8 的原始驗收紀錄保存在其目錄。模型實際路徑由 YAML 決定，來源絕對路徑僅供追溯。
 
 ```bash
 python little_white_mjlab.py --check
 python little_white_wtw.py --check
+python little_white_wtw.py --check-mapping ../csl_mujoco/unitree_robots/little_white_v3/scene.xml
 ```
-
-兩個入口在載入時檢查 SHA256 與模型介面。更換模型時需同步核對 YAML、metadata、關節順序與控制週期。
