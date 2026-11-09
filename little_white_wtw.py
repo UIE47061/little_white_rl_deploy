@@ -36,6 +36,7 @@ def create_teleop(config, commands):
     from wtw_teleop import WTWTeleop
     return WTWTeleop(config_init=commands.tolist(),
                      max_lin=config["max_lin"], max_ang=config["max_ang"],
+                     cruise=config.get("keyboard_cruise"),
                      max_lateral=config.get("max_lateral", 0.15),
                      max_backward=config.get("max_backward", 0.2),
                      control_limits=config.get("wtw_keyboard_limits"),
@@ -112,6 +113,9 @@ class WTWPolicy:
                     np.any(configured[:, 1] > declared[:, 1] + 1e-7)):
                 raise ValueError("Configured velocity limits exceed the evaluated model ranges")
         self.validate_commands(self.commands)
+        self.forward_accel = cfg.get("forward_accel")
+        if self.forward_accel is not None and (not np.isfinite(self.forward_accel) or self.forward_accel <= 0):
+            raise ValueError("forward_accel must be finite and positive")
         self.preset = cfg.get("motion_preset")
         self.motion_limits = None
         if meta.get("slippery_command_limits") is not None:
@@ -157,6 +161,8 @@ class WTWPolicy:
         self.previous_action = np.zeros(12, dtype=np.float32)
         self.phase = np.float32(0.0)
         self.effective_commands = self.commands.copy()
+        if self.forward_accel is not None:
+            self.effective_commands[0] = 0
         if self.preset == "slippery_trot":
             self.effective_commands[:3] = 0
 
@@ -187,7 +193,11 @@ class WTWPolicy:
             self.effective_commands[:3] = limit_velocity(current, target, self.control_dt,
                                                        limits=self.motion_limits)[0].numpy()
         else:
+            previous_vx = self.effective_commands[0]
             self.effective_commands[:3] = self.commands[:3]
+            if self.forward_accel is not None and self.commands[0] > 0:
+                self.effective_commands[0] = min(self.commands[0],
+                    max(0., previous_vx) + self.forward_accel * self.control_dt)
 
     @staticmethod
     def gravity(quaternion):

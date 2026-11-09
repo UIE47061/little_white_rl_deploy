@@ -50,14 +50,14 @@ class WTWDeploymentTest(unittest.TestCase):
         np.testing.assert_array_equal(runtime.history, history)
         self.assertEqual(runtime.phase, phase)
         with self.assertRaises(ValueError):
-            controller.command('cmd vx 0.9')
+            controller.command(f"cmd vx {runtime.config['max_lin'] + .1}")
         self.assertAlmostEqual(runtime.commands[0], 0.2)
         with self.assertRaises(ValueError):
             controller.command('ctl idle_step 1')
 
     def test_wrong_pd_digest_or_widened_velocity_limits_are_rejected(self):
         original = yaml.safe_load(DEFAULT_CONFIG.read_text())
-        for override in ({'kps': [20.0] * 12}, {'policy_sha256': '0' * 64}, {'max_lin': 0.9}):
+        for override in ({'kps': [20.0] * 12}, {'policy_sha256': '0' * 64}, {'max_lin': original['max_lin'] + .1}):
             with self.subTest(override=override), tempfile.TemporaryDirectory() as folder:
                 cfg = copy.deepcopy(original)
                 cfg.update(override)
@@ -70,8 +70,19 @@ class WTWDeploymentTest(unittest.TestCase):
 
     def test_web_uses_new_limits_and_disables_unsupported_idle_control(self):
         config = make_config(WTWPolicy())
-        self.assertEqual(config['speeds'], dict(forward=.3, backward=.2, lateral=.15, yaw=.5))
+        self.assertEqual(config['speeds'], dict(forward=yaml.safe_load(DEFAULT_CONFIG.read_text())['max_lin'], backward=.2, lateral=.15, yaw=.5))
         self.assertFalse(config['idle_control'])
+
+    def test_forward_acceleration_on_move_and_release(self):
+        runtime = WTWPolicy()
+        runtime.forward_accel = .8
+        runtime.commands[0] = runtime.config["max_lin"]
+        runtime.reset()
+        runtime.prepare_command()
+        self.assertAlmostEqual(runtime.effective_commands[0], .8 * runtime.control_dt)
+        runtime.commands[0] = 0.
+        runtime.prepare_command()
+        self.assertEqual(runtime.effective_commands[0], 0.)
 
     def test_mjlab_entry_remains_loadable(self):
         c = MJLabController(use_gui=False)

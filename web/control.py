@@ -59,6 +59,8 @@ class WebControl:
 
     def release(self, reason, now):
         c = self.controller
+        previous_mode = c.mode
+        had_owner = self.owner is not None
         c.runtime.commands[:3] = 0
         if self.owner is not None:
             self.epoch += 1
@@ -66,6 +68,8 @@ class WebControl:
                 c.set_mode("stand")
         self.owner = None
         self.reason = reason
+        if had_owner:
+            print(f"[WEB] {previous_mode} -> {c.mode}: {reason}", flush=True)
 
     def watchdog(self, now=None):
         now = time.monotonic() if now is None else now
@@ -88,7 +92,14 @@ class WebControl:
         # requests expire, so a backlog cannot restart the robot after timeout.
         if action == "release":
             if self.owner == client:
-                self.release("已釋放控制", now)
+                reasons = {
+                    "window_blur": "網頁失去焦點，已釋放控制",
+                    "page_hidden": "網頁進入背景，已釋放控制",
+                    "page_left": "網頁已離開，已釋放控制",
+                    "connection_closed": "網頁連線中斷，已釋放控制",
+                }
+                reason = message.get("reason")
+                self.release(reasons.get(reason if isinstance(reason, str) else "", "已釋放控制"), now)
             return
         if now-received > COMMAND_TIMEOUT or received > now:
             raise ValueError("Expired command; acquire control again")
@@ -135,6 +146,9 @@ class WebControl:
             c.runtime.commands[:3] = 0
             c.set_mode(mode)
             self.epoch += 1
+            # A successful mode request is fresh operator activity. Give its
+            # acknowledgement and new-epoch neutral control a full lease.
+            self.last_heartbeat = received
         elif action in ("parameters", "gait", "reset"):
             candidate = c.runtime.commands.copy()
             if action == "reset":

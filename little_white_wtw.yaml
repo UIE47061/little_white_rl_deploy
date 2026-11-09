@@ -1,7 +1,6 @@
-# Kp=40/Kd=0.1 precision repair, best checkpoint 1500, 2026-11-05.
-# Zero velocity continues real policy stepping: trot 2.5 Hz, duty 0.5, swing 0.06 m.
-policy_path: pre_train/wtw/wtw_kp40_precision_20261105_1500/policy.pt
-metadata_path: pre_train/wtw/wtw_kp40_precision_20261105_1500/metadata.json
+# V7 full commands, best checkpoint 20000; sim2sim.
+policy_path: pre_train/wtw/v7_full_commands_20000/policy.pt
+metadata_path: pre_train/wtw/v7_full_commands_20000/metadata.json
 device: cpu
 domain_id: 1
 interface: lo
@@ -23,7 +22,9 @@ observation_clip: 100.0
 cmd_init: [0.0, 0.0, 0.0, 0.0, 2.5, 0.5, 0.0, 0.0, 0.5, 0.06, 0.0, 0.0, 0.2929094785, 0.35649931395, 0.0]
 cmd_scale: [2.0, 2.0, 0.25, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.15, 0.3, 0.3, 1.0, 1.0, 1.0]
 use_gui: true
-max_lin: 0.3
+max_lin: 1.0
+keyboard_cruise: 0.6
+forward_accel: 0.8
 max_backward: 0.2
 max_lateral: 0.15
 max_ang: 0.5
@@ -43,4 +44,4 @@ gamepad:
   zero_button: 0
   deadzone: 0.1
   timeout: 0.25
-policy_sha256: 832ede4f1eaf1f4596f1ac79f0995ccbe25269973e31690f888a65f022657d59
+policy_sha256: 2bc07316ea5f74bdd666e4888a46d6dcaa08efcc27998b843f0a0ef3d2223b3c

@@ -5,7 +5,7 @@
 | 版本 | 入口 | 模型 | 控制方式 |
 |---|---|---|---|
 | MJLab Proprio V7 | `little_white_mjlab.py` | `pre_train/mjlab/proprio_v7/` | 鍵盤、搖桿、終端機 |
-| WTW 40/0.1 精度修正 1500 | `little_white_wtw.py` | `pre_train/wtw/wtw_kp40_precision_20261105_1500/` | 鍵盤、搖桿、終端機、手機網頁 |
+| WTW 40/0.1 高速模擬版 | `little_white_wtw.py` | `pre_train/wtw/v6_fast_level_mix_1200/` | 鍵盤、搖桿、終端機、手機網頁 |
 
 ## 安裝
 
@@ -110,13 +110,11 @@ python little_white_wtw.py lo --web
 ```
 
 WTW 鍵盤為按住 W/S、A/D、Q/E 移動，放開歸零；終端機先 `stand`，等待轉換完成，再 `move`。
-目前預設為 **2026-11-05 WTW 精度修正第 1,500 輪模型，Kp=40、Kd=0.1**，輸入為 70 維 × 30 幀。
-預設 trot：2.5 Hz、支撐相比例 0.5、抬腳高度 0.06 m；保持 200 Hz 發送與 50 Hz 推論。
-**零速度持續真正原地踏步**，保留歷史與相位，不使用固定站姿替代。
-速度上限：前進 0.3、後退 0.2、側移 ±0.15 m/s、轉向 ±0.5 rad/s。
+目前預設使用 v5 recovery500 低速策略與 v6 第 1200 次更新的高速策略，於 0.3～0.6 m/s 平滑切換。左右鏡射平均動作用來減少持續側傾。Kp 40、Kd 0.1，輸入 70 維 × 30 幀，200 Hz 發送、50 Hz 推論。
+鍵盤前進速度為 **W 0.6、Ctrl+W 0.8、Shift+W 1.0 m/s**。前進指令以 0.8 m/s² 增加。後退上限 0.2 m/s、側移 ±0.15 m/s、轉向 ±0.5 rad/s。
 
 終端機可用 `gait trot`／`gait pace`／`gait bound`／`gait pronk`；
-`cmd vx 0.2` 前進、`cmd vx 0` 回到原地踏步，也支援 `cmd vy 0.1`、`cmd yaw_rate 0.2`。
+`cmd vx 0.2` 前進、`cmd vx 0` 要求零速踏步（部分步態仍有位移），也支援 `cmd vy 0.1`、`cmd yaw_rate 0.2`。
 `cmd frequency 2.8` 調整步頻，`status` 查看命令，`stop` 立即切阻尼。
 這顆模型不支援 slippery presets 或 idle_step 切換。
 
@@ -124,11 +122,7 @@ WTW 鍵盤為按住 W/S、A/D、Q/E 移動，放開歸零；終端機先 `stand`
 操作順序為 **取得控制 → Stand → 等待完成 → Move**。
 網頁控制台目前使用 WTW 入口，詳見 [網頁說明](web/README.md)。
 
-目前載入精度修正訓練的最佳第 1,500 輪，20 個情境各 4 seeds × 20 秒，18/20 通過嚴格診斷，全部存活。
-訓練端零速最大漂移約 3.3 cm；右側移指令 −0.15 m/s，實際約 −0.143 m/s；左右轉指令 ±0.5 rad/s，實際約 +0.454／−0.441 rad/s。
-小幅轉向 ±0.25 rad/s 仍未達精度門檻。這是診斷結果，尚未完成 20 seeds 正式驗收與完整 DDS 動態驗證。
-本輪集中訓練預設 2.5 Hz trot；其他步態、頻率、高度與姿態指令尚未重新驗證。
-完整結果見模型目錄 `precision_evaluation.json`。
+在 DDS/MuJoCo 的 1.0 m/s 直走指令下，trot、pace、bound、pronk 實速分別為 0.874、0.840、0.477、0.601 m/s。pace 高速時會倍頻，bound 放開前進鍵後仍有漂移。這些是平地模擬量測。逐段結果見 `artifacts/fast_level_20261108/mix1200dds/results.json`。
 
 `little_white_mjlab.py` 與預設 YAML 已還原，維持原本 Proprio V7。
 

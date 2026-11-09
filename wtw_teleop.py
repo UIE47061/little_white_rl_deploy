@@ -57,7 +57,11 @@ def panel_worker(values, lock, manual_velocity, running, ready, defaults, limits
                     elif event.type == pygame.KEYUP:
                         held.discard(pygame.key.name(event.key))
                 if not manual_velocity.value:
-                    vx, backward, vy, yaw = speeds
+                    top, backward, vy, yaw, cruise = speeds
+                    mods = pygame.key.get_mods()
+                    vx = top if mods & pygame.KMOD_SHIFT else cruise
+                    if mods & pygame.KMOD_CTRL:
+                        vx = (cruise + top) / 2
                     state.command[:3] = [
                         vx*int("w" in held)-backward*int("s" in held),
                         vy*(int("a" in held)-int("d" in held)),
@@ -73,7 +77,8 @@ def panel_worker(values, lock, manual_velocity, running, ready, defaults, limits
             screen.blit(title.render("WTW CONTROL", True, (98, 204, 234)), (24, 18))
             lines = [
                 "Click this window to control. Use stand / move in the terminal.",
-                "W / S : forward / backward (hold; release to stop)",
+                (f"W {speeds[4]:.2f}  |  Ctrl+W {(speeds[4]+speeds[0])/2:.2f}  |  Shift+W {speeds[0]:.2f} m/s  |  S backward"
+                 if speeds[4] < speeds[0] else "W / S : forward / backward (hold; release to stop)"),
                 "A / D : left / right        Q / E : turn left / right",
                 "Space : zero velocity      Esc : zero velocity and close panel",
                 "1 trot    2 pace    3 bound    4 pronk",
@@ -108,7 +113,10 @@ class WTWTeleop:
     """A separate GUI process with atomic shared 15-dimensional commands."""
 
     def __init__(self, config_init, max_lin=0.3, max_ang=0.5,
-                 max_lateral=0.15, max_backward=0.2, control_limits=None, idle_control=False):
+                 max_lateral=0.15, max_backward=0.2, control_limits=None, idle_control=False, cruise=None):
+        cruise = max_lin if cruise is None else cruise
+        if not 0 < cruise <= max_lin:
+            raise ValueError("keyboard_cruise must be positive and at most max_lin")
         defaults = validate_command(config_init).copy()
         WTWCommandState(defaults, control_limits)  # Validate before spawning.
         context = mp.get_context("spawn")
@@ -122,7 +130,7 @@ class WTWTeleop:
             target=panel_worker, daemon=True,
             args=(self.values, self.lock, self.manual_velocity, self.running,
                   self.ready, defaults, control_limits,
-                  (max_lin, max_backward, max_lateral, max_ang), idle_control))
+                  (max_lin, max_backward, max_lateral, max_ang, cruise), idle_control))
         self.process.start()
         deadline = time.monotonic()+5
         while not self.ready.wait(0.05):

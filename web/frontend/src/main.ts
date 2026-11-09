@@ -45,21 +45,24 @@ function send(message:Record<string,unknown>,ack=true) {
   socket.send(JSON.stringify(message));
 }
 function sendControl(){if(!resetting && owns() && state) send({type:'control',epoch:state.epoch,vx,vy,yaw_rate:yaw},false);}
-function relinquish(){
-  foreground=false;resetSticks();if(state?.owner===client) send({type:'release'});
+function relinquish(reason:string){
+  foreground=false;resetSticks();if(state?.owner===client) send({type:'release',reason});
   updateUI();
 }
-window.addEventListener('blur',relinquish);
+window.addEventListener('blur',()=>relinquish('window_blur'));
 window.addEventListener('focus',()=>{foreground=!document.hidden;updateUI();});
-document.addEventListener('visibilitychange',()=>{if(document.hidden) relinquish();else {foreground=true;updateUI();}});
-window.addEventListener('pagehide',()=>{relinquish();socket?.close();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden) relinquish('page_hidden');else {foreground=true;updateUI();}});
+window.addEventListener('pagehide',()=>{relinquish('page_left');socket?.close();});
 window.addEventListener('pageshow',()=>{foreground=!document.hidden;if(cfg && socket?.readyState===WebSocket.CLOSED) connect();});
 window.addEventListener('resize',resetSticks);
 
 function acceptState(next:State) {
   if(state && next.time<state.time) return;
-  if(!state || state.epoch!==next.epoch || state.owner!==next.owner || state.mode!==next.mode) resetSticks();
+  const changed=!state || state.epoch!==next.epoch || state.owner!==next.owner || state.mode!==next.mode;
+  if(changed) resetSticks();
   state=next;receivedAt=performance.now();
+  // Confirm ownership / the new epoch immediately, before rendering and timers.
+  if(changed && state.owner===client) sendControl();
   if(isFresh()) viewer?.update(next);
   updateUI();
 }

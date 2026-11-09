@@ -52,7 +52,7 @@ def create_app(config, requests, responses, states, ready=None):
                         out.put_nowait(result)
                     except asyncio.QueueFull:
                         # Closing a saturated client expires its control session.
-                        offer(requests, (client, {"type": "release"}, time.monotonic()))
+                        offer(requests, (client, {"type": "release", "reason": "connection_closed"}, time.monotonic()))
             try:
                 latest = states.get_nowait()
                 revision += 1
@@ -134,7 +134,7 @@ def create_app(config, requests, responses, states, ready=None):
             await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
         finally:
             clients.pop(client, None)
-            offer(requests, (client, {"type": "release"}, time.monotonic()))
+            offer(requests, (client, {"type": "release", "reason": "connection_closed"}, time.monotonic()))
             for task in tasks:
                 task.cancel()
             await asyncio.gather(*tasks, return_exceptions=True)
