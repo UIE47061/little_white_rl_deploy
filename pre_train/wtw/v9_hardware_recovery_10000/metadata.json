@@ -150,16 +150,76 @@
     0.2
   ],
   "orientation_commands": "Rx(-roll) @ Ry(-pitch)",
-  "source_checkpoint": "/home/csl/U1_ws/walk_these_ways_mjlab/runs/wtw_full_commands_20261109_seed19_v7/training/model_20000.pt",
-  "source_checkpoint_sha256": "20f19fe7dc36c91c59e724c8e7c83da84125171c56bd2caa4866c37e61280e1f",
-  "policy_sha256": "2bc07316ea5f74bdd666e4888a46d6dcaa08efcc27998b843f0a0ef3d2223b3c",
-  "iteration": 20000,
+  "hardware_dr": {
+    "profile": "little_white_hardware",
+    "target_scale": 1.0,
+    "ramp_iterations": 500,
+    "last_rollout_reset_scale": 1.0,
+    "active_episode_scale_mean": 0.84765625,
+    "full_scale_ranges": {
+      "friction": [
+        0.4,
+        1.2
+      ],
+      "motor_strength": [
+        0.8,
+        1.2
+      ],
+      "base_mass_factor": [
+        0.9,
+        1.2
+      ],
+      "base_com_xy_max_m": [
+        0.03,
+        0.02
+      ],
+      "kp_factor": [
+        0.8,
+        1.2
+      ],
+      "kd_factor": [
+        0.8,
+        1.2
+      ],
+      "armature_factor": [
+        0.5,
+        2.0
+      ],
+      "joint_frictionloss_factor": [
+        0.5,
+        2.0
+      ],
+      "encoder_bias_rad": [
+        -0.03,
+        0.03
+      ],
+      "action_delay_physics_steps": [
+        0,
+        4
+      ],
+      "gravity_noise_max": 0.05,
+      "q_noise_max_rad": 0.01,
+      "dq_noise_max_rad_s": 1.0,
+      "push_interval_s": [
+        8.0,
+        12.0
+      ],
+      "push_speed_m_s": [
+        0.3,
+        0.5
+      ]
+    }
+  },
+  "source_checkpoint": "/home/csl/U1_ws/walk_these_ways_mjlab/runs/wtw_hardware_recovery_v9_20261110_114352/training/model_10000.pt",
+  "source_checkpoint_sha256": "a6d222902bf57a8070939be9f4190be3269cdcbad60704bd09a70c96d9c1fc63",
+  "policy_sha256": "ed0869ecd65df8baad775beaa986b42def22bf9467e3bdb11f63fbcdba92cfd5",
+  "iteration": 10000,
   "training_config": {
     "mode": "wtw",
-    "num_envs": 512,
-    "iterations": 100000,
+    "num_envs": 2048,
+    "iterations": 20000,
     "steps": 24,
-    "seed": 19,
+    "seed": 23,
     "lr": 3e-05,
     "epochs": 5,
     "minibatches": 4,
@@ -182,7 +242,7 @@
       "extra_touchdown_cost": 0.6,
       "timing_gait_weights": [
         0.0,
-        1.0,
+        1.5,
         1.0,
         1.0
       ],
@@ -197,7 +257,7 @@
       "tracking_yaw_sigma": 0.2,
       "tracking_weight": 3.0,
       "yaw_tracking_weight": 2.0,
-      "tracking_error_weight": 0.6,
+      "tracking_error_weight": 1.0,
       "zero_velocity_sigma": 0.03,
       "zero_yaw_sigma": 0.05,
       "placement_mode": "rigid_body",
@@ -264,19 +324,24 @@
       "stance_delta": 0.025,
       "nominal_rehearsal_fraction": 0.3,
       "gait_sampling_weights": [
-        0.25,
-        0.25,
-        0.25,
-        0.25
+        0.35,
+        0.35,
+        0.15,
+        0.15
       ],
       "shape_curriculum_scale": 1.0,
-      "domain_randomization_scale": 0.0,
+      "domain_randomization_scale": 1.0,
+      "rear_load_fraction": 0.35,
+      "nominal_hardware_fraction": 0.15,
+      "recovery_command_fraction": 0.4,
+      "zero_drift_weight": 3.0,
+      "dr_ramp_iterations": 500,
       "new_gait_direction_fraction": 1.0,
       "gait_forward_speed_curriculum": true,
       "fast_forward_fraction": 0.55,
       "raw_phase_fraction": 0.05,
       "roll_bias_weight": 0.7,
-      "randomization": "none",
+      "randomization": "little_white_hardware",
       "identification_nuisances": [],
       "ground_relative": true,
       "slope_curriculum": false,
@@ -294,14 +359,18 @@
       "full_parameters",
       "full_parameters_fast",
       "full_directions",
-      "phase_controls"
+      "phase_controls",
+      "hardware_stress"
     ],
-    "init_checkpoint": "/home/csl/U1_ws/walk_these_ways_mjlab/runs/wtw_fast_level_20261108_seed16_v6/model_1500.pt",
+    "init_checkpoint": "/home/csl/U1_ws/walk_these_ways_mjlab/runs/wtw_full_commands_hardware_v8_20261109_182100/training/model_15000.pt",
     "initial_action_std": 0.12,
     "entropy_coef": 0.0005,
-    "reference_checkpoint": "/home/csl/U1_ws/walk_these_ways_mjlab/runs/wtw_kp40_precision_20261105_seed11/model_1500.pt",
+    "reference_checkpoint": "/home/csl/U1_ws/walk_these_ways_mjlab/runs/wtw_full_commands_20261109_seed19_v7/training/model_20000.pt",
     "reference_coef": 0.5,
-    "reference_sigma": 0.1
+    "rank_original_hardware": true,
+    "reference_sigma": 0.1,
+    "early_stop_min_iterations": 8000,
+    "early_stop_patience": 5000
   },
   "assets": {
     "revision": "0ab74ef5d6048345db7a541316019100416b57d6",
@@ -355,6 +424,8 @@
       "configs/experiments/diagnostic_recovery.yaml": "ec5f1ce53bf1cc08b47a7319a2bdec625ece291b75b83430241e239585753c73",
       "configs/experiments/fast_level.yaml": "3389ce70afb4e5bd8f1caa8a1db66996ebbd00ad12a277087b33aa8f2012c414",
       "configs/experiments/full_commands.yaml": "f310aa5416d22f426cac626e6fb5a4a697f9a51d7eab68344c2a037a601777da",
+      "configs/experiments/full_commands_hardware.yaml": "3e329068225704a0f17b454cf6eca34dfba0c2a6e120044639e18c2959b26240",
+      "configs/experiments/full_commands_hardware_recovery.yaml": "21454a8e3e877ff339d8abcdc44d8751c90139733667d8f2a9250437d70fb7d7",
       "configs/experiments/gait_speed_curriculum.yaml": "a4aa1d56de5fd9d63316220dfc88baffb55d6c930d581f918ec3bea5c66496e4",
       "configs/experiments/improvements/clearance_input_gain.yaml": "16234d3f165d67a14f84dd156840616ad562906c2639f0b680dd93eb5cef902b",
       "configs/experiments/improvements/clearance_normalized.yaml": "a521414b40d716a9e8c341cf32c7fd34f329afbcf4beed6873545a402fed3123",
@@ -389,35 +460,37 @@
       "scripts/run_experiments.py": "10d55112571afb93dbf6aff53b60303f831e97dbc4fec8262c0075ae66bd3b2a",
       "scripts/run_improvement_studies.py": "2d55ce0b327359721bdc88a619759a9057f75f92f1057b2172fa9a5dc76a62c0",
       "scripts/train_diagnostic_recovery.py": "54af1bda71339f9987d2bdc7a26280a3e84e71b88c8ffe9dbebd937dfa713198",
-      "scripts/train_full_commands.py": "5d704ca6c1b9bdedc9d8e0a88bb6b2a0948466a6bc84c797a20618f84281c113",
+      "scripts/train_full_commands.py": "106235bbe2b66beaf452ac09fc385772999f93bc04539c874e040c6c680bae9e",
       "scripts/training_status.py": "f37735033288680bf3a17fb15043db1b0d141bee5d99323378c5cbdb55c96c1c",
       "src/wtw_mjlab/__init__.py": "0727e9f8c4ad196f3c6c7c243a58ac346a5e6a0cd404848f63a926a8c47ba7b1",
       "src/wtw_mjlab/assets.py": "cffb338b60b24c63c21194bc63c04c400add142aeca104cc0e9c2b8f139009f0",
       "src/wtw_mjlab/check.py": "828e13af4b90886362c6adca70aee5f30782d6e017ec9c18c1230e1c92ad6529",
-      "src/wtw_mjlab/checkpoint.py": "99793c24ddf6960230a4e367fe0926500d3183dc7ffd21f7d7f74722e635ae0d",
+      "src/wtw_mjlab/checkpoint.py": "b16e00216a25faef3d4a873bd2fc7427ee74dc39c85c9df8bc567b69f2046ec6",
       "src/wtw_mjlab/contract.py": "fee453bd96e8674800b1a5d08302e0e7e13804e317ffd1ef3c160b6c2f36b949",
       "src/wtw_mjlab/deployment/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "src/wtw_mjlab/deployment/bilateral.py": "359cfdece42d53bbb22fecba342ade16455b814756aaf94e9ad91b733f592b98",
       "src/wtw_mjlab/deployment/command_response.py": "3e39f22bbe9d698a68f40324219dcf130684e258e435f6b48300f4bdb5e295ed",
-      "src/wtw_mjlab/deployment/evaluate.py": "49f9ca07653ed2ceb3b5a20dde46a85c49fb02c6119c0ced4599b47a92591139",
-      "src/wtw_mjlab/deployment/export.py": "c245469e59c5ff7ba5866c2fdcdedf593bd8637816bb702710ce1d9b24a40ce9",
-      "src/wtw_mjlab/deployment/sim2sim.py": "90117b2c2eb3e124b1eba46a77cc89fb8aa628234b5df5f252de66d4b5e6d441",
-      "src/wtw_mjlab/experiments.py": "6489a9ad6d6de9868412893848266e0d0a3fb1281c8a06dd3b5b1305137c51c5",
+      "src/wtw_mjlab/deployment/evaluate.py": "4e452d409c657e75216d967989fc5febc28f292d8a73c3d5cac7e668caa8fc17",
+      "src/wtw_mjlab/deployment/export.py": "2a7600e53c35f025404d8e9ed1d0901c251e1960a2902f5d8d430f72828f85d7",
+      "src/wtw_mjlab/deployment/sim2sim.py": "517d3380d118da155f31d1204fe5d03e498017edcea6f03f9df99f5a02c5c627",
+      "src/wtw_mjlab/experiments.py": "aaac719e63cb41aee9b3db8ed0592d86063cb6e103717b5cd19f4c7d93553905",
+      "src/wtw_mjlab/hardware_profile.py": "a87c820afb1a9a8964a23b4fd60a94a683accbb2188339914af1af8dde5aed8e",
       "src/wtw_mjlab/learning/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "src/wtw_mjlab/learning/history.py": "a8c6e1175e72ec09e8f72b34bac3f023fa2ac473a70fcec6e2a3d5a715753f19",
       "src/wtw_mjlab/learning/models.py": "850c488ebb4d8e8527d1eb1734069e413bb82e78c38e0cffbb597a5ab039048d",
       "src/wtw_mjlab/learning/ppo.py": "b9434eb5ba19315d74bb6a9220fa3891044ef0d63fd67ac7b9b632ffd31e4536",
       "src/wtw_mjlab/learning/reference.py": "91bb5396566e281df5561505f8187c4a87661542cb5bc11198aec57ec9c80eae",
-      "src/wtw_mjlab/learning/train.py": "6e6f69dda2cd4ea523a2eafbd66bcbcbd885a9abe46f16af154d147ee4d2f670",
+      "src/wtw_mjlab/learning/train.py": "d7cc6a527718543ecdaadc738301d2955a4fb253fe3ff6235a5f9f1e550d8a34",
       "src/wtw_mjlab/resources.py": "a37ce96f3281b3481addf66d92304550346978b35df0da5ad7b30a7866495095",
       "src/wtw_mjlab/tasks/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "src/wtw_mjlab/tasks/actions.py": "367328d3dfed2ac43900ad874ec14c12e83fdc40fac813fca32f1c236069b9a2",
+      "src/wtw_mjlab/tasks/actions.py": "4cbedd91ba05eef8168404af54220ddd72fe2a84faf4fdf2b106335ccefd2145",
       "src/wtw_mjlab/tasks/commands.py": "aea46ef361ef4cadba7d0e987a9d6bf6f8f48152404387e4c8c547e30b8b001d",
-      "src/wtw_mjlab/tasks/config.py": "e2811a552bcca518595efa655e0d9f1603ce3fd6e1391bc82a5f9ebd7f313eb3",
+      "src/wtw_mjlab/tasks/config.py": "0b2e6ab3ab673f4f287a1d854dc03a2a02f8b29580f18cd1fb229d0e648a1082",
       "src/wtw_mjlab/tasks/curriculum.py": "e2269ea7c15dad35b844cf02556a518766afc739c18df45770bbe34d3ade7f18",
-      "src/wtw_mjlab/tasks/evaluation.py": "75140b7ee37e52f6507fc4d4d79fa755c953de330dd8fc1022fa9182d23a36a9",
-      "src/wtw_mjlab/tasks/full_commands.py": "1b8041488c9a4469a9336bd1aa811ca38df39ad5b6a128982ddd7ecc44b0aa5c",
-      "src/wtw_mjlab/tasks/mdp.py": "7511af52c047a312e8eecba709f01ef382af2afef96c7e0b89b03a132843c70d",
+      "src/wtw_mjlab/tasks/evaluation.py": "bb4149f67f01dbcd607f177ec2ff9f1d85f9b80b0d9ea11423996c7c96f2df3b",
+      "src/wtw_mjlab/tasks/full_commands.py": "041f73d32c78c857915758c0140a058e6a05be8b5f15d3974df559752f467c7e",
+      "src/wtw_mjlab/tasks/hardware_randomization.py": "8789b571a2d5b66bba10db04d2624962990364be8682244c192c1119e6d2e10c",
+      "src/wtw_mjlab/tasks/mdp.py": "3f275e90b9cb4f33c3c79259db5a80e75ac6d6c381e511d0349ba9eb0111b835",
       "src/wtw_mjlab/tasks/rewards.py": "210520d76f902ac80f106202dd06ce99ce2103d2acf46fc06405fa868a26c035",
       "src/wtw_mjlab/tasks/terrain.py": "fbc2acd54469daae1778869e23bb6ead754d5715f97d1e62bc0f33236af1d152",
       "src/wtw_mjlab/tasks/timing_reward.py": "a0e3e09871806cb9b5ae3a7744ccdffd8a86750e3fee77a0f575659167844e2f",

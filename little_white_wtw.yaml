@@ -1,6 +1,6 @@
-# V7 full commands, best checkpoint 20000; sim2sim.
-policy_path: pre_train/wtw/v7_full_commands_20000/policy.pt
-metadata_path: pre_train/wtw/v7_full_commands_20000/metadata.json
+# V9 hardware recovery, checkpoint 10000; sim2sim.
+policy_path: pre_train/wtw/v9_hardware_recovery_10000/policy.pt
+metadata_path: pre_train/wtw/v9_hardware_recovery_10000/metadata.json
 device: cpu
 domain_id: 1
 interface: lo
@@ -44,4 +44,4 @@ gamepad:
   zero_button: 0
   deadzone: 0.1
   timeout: 0.25
-policy_sha256: 2bc07316ea5f74bdd666e4888a46d6dcaa08efcc27998b843f0a0ef3d2223b3c
+policy_sha256: ed0869ecd65df8baad775beaa986b42def22bf9467e3bdb11f63fbcdba92cfd5
